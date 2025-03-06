@@ -28,14 +28,6 @@ Specification ​
 
 👍 Logged-in users can upvote or downvote based on if the bin exists or not 
 
-📇 Users can create an account and change password​
-
-🗺️ Map API – Leaflet.js which users can interact with and add bin locations​
-
-➕ Logged-in users can add bin types to the bin locations​
-
-➖ Admin can delete and edit locations and bin types​
-
-👍 Logged-in users can upvote or downvote based on if the bin exists or not ​
+​
 
 
