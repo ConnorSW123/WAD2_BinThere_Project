@@ -11,9 +11,19 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from pathlib import Path
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Join Paths for BASE_DIR and Templates Subdirectory
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
+
+#Static Helper Path Variable to reach the static/images subdirectory
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
+
+#Media Helper Path Variable to allocate pathing for videos
+MEDIA_DIR = os.path.join(BASE_DIR, 'media')
 
 
 # Quick-start development settings - unsuitable for production
@@ -25,7 +35,12 @@ SECRET_KEY = 'lvnh*)sjrilx$^5v(ee-j3+ucdnvbzs5i%0e%c(hz^2ewh&a4f'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# CHAPTER 19 ADDITION
+#TO DO: Change this to the username of the PythonAnywhere Account we plan on hosting our WebApp.
+# First Item is a PythonAnywhere Hosting URL - Using Connor's as default/placeholder at the moment.
+# Second Item is device port for hosting webapp locally - Do not remove or Webapp will not host locally.
+
+ALLOWED_HOSTS = ['ConnorSweeney.pythonanywhere.com', '127.0.0.1']
 
 
 # Application definition
@@ -37,6 +52,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'BinThere',
+    'registration'
+
 ]
 
 MIDDLEWARE = [
@@ -54,7 +72,7 @@ ROOT_URLCONF = 'WAD2_BinThere_Project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATE_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -62,10 +80,12 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'WAD2_BinThere_Project.wsgi.application'
 
@@ -118,3 +138,31 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+#Static Files Subdirectory Path
+STATICFILES_DIRS = [STATIC_DIR, ]
+
+STATIC_URL = '/static/'
+
+#Media Files Root and URL Variables
+MEDIA_DIR = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = MEDIA_DIR 
+MEDIA_URL = '/media/'
+
+#Login URL Redirection
+LOGIN_URL = 'BinThere:login'
+
+
+# If True, users can register. 
+REGISTRATION_OPEN = True 
+
+# If True, the user will be automatically logged in after registering. 
+REGISTRATION_AUTO_LOGIN = True 
+
+# The URL that Django redirects users to after logging in.
+LOGIN_REDIRECT_URL = 'BinThere:index' 
+
+# The page users are directed to if they are not logged in. 
+# # This was set in a previous chapter. 
+# The registration package uses this, too. 
+LOGIN_URL = 'auth_login'

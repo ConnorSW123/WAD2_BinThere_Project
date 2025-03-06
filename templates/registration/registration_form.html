@@ -1,0 +1,41 @@
+{% extends 'BinThere/base.html' %} 
+
+{% block title_block %} 
+    Register 
+{% endblock %} 
+
+{% block body_block %} 
+<h1 class="jumbotron-heading">Register Here</h1>
+<div class="jumbotron p-4">
+    <div class="container"> 
+        <div class="row"> 
+            <div class="col-md-6 offset-md-3"> 
+                <div class="form-group"> 
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <!-- Display form errors -->
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                <strong>There were some errors:</strong>
+                                <ul>
+                                    {% for field, errors in form.errors.items %}
+                                        {% for error in errors %}
+                                            <li>{{ field|title }}: {{ error }}</li>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+
+                        <!-- Render the form fields dynamically -->
+                        {{ form.as_p }}
+
+                        <button type="submit" class="btn btn-primary">Register</button> 
+                    </form> 
+                </div> 
+            </div> 
+        </div> 
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,8 @@
+Use this page to store any references needed for external sources/packages/images used.
+
+
+Favicon - https://c8.alamy.com/comp/2HKEJ26/rubbish-bin-green-with-leaf-logo-design-vector-graphic-symbol-icon-illustration-creative-idea-2HKEJ26.jpg
+Green Leaf Picture - https://img.freepik.com/premium-vector/eco-circle-with-hand-logo_78370-3923.jpg?w=2000
+RubbishInBin.jpg - https://cdn1.vectorstock.com/i/1000x1000/55/65/put-rubbish-in-the-bin-vector-23855565.jpg
+
+leaflet Javascript Package - https://leafletjs.com/index.html

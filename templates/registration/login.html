@@ -1,0 +1,32 @@
+{% extends 'BinThere/base.html' %} 
+
+{% block title_block %} 
+    Login 
+{% endblock %} 
+
+{% block body_block %}
+<div class="jumbotron p-4">
+    <h2 class="text-left mb-4">Login</h2>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <form class="form-signin" role="form" method="post" action="."> 
+                    {% csrf_token %} 
+                    <label for="inputUsername" class="sr-only">Username</label> 
+                    <input type="text" name="username" id="id_username" class="form-control" 
+                            placeholder="Username" required autofocus> 
+                    <label for="inputPassword" class="sr-only">Password</label> 
+                    <input type="password" name="password" id="id_password" class="form-control" 
+                            placeholder="Password" required> 
+                    <button class="btn btn-lg btn-primary w-100 mt-3" type="submit">Sign in</button> 
+                </form> 
+            </div>
+        </div>
+    </div>
+    
+</div>
+{% endblock %}
+
+    
+    
+
