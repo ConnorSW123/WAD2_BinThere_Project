@@ -92,8 +92,8 @@
         console.log(binData); // Check the console to see if binData is correct
 
         // Initialize map centered around University of Glasgow
-        var initialLatitude = binData.length > 0 ? binData[0].latitude : 55.8780;  // University of Glasgow Latitude
-        var initialLongitude = binData.length > 0 ? binData[0].longitude : -4.2900; // University of Glasgow Longitude
+        var initialLatitude = 55.8723 ;  // University of Glasgow Latitude
+        var initialLongitude = -4.2882 ; // University of Glasgow Longitude
 
         var map = L.map('map').setView([initialLatitude, initialLongitude], 18);  // Default zoom level
 
