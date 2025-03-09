@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<!-- Map.html cannot currently extend base.html due to CSS conflictions causing the map to not appear or appear distorted -->
+<!-- This needs to be addressed in final presentation and is not an error-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BinThere - Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        /* Style for the map */
+        #map {
+            height: 500px;
+        }
+
+        /* Styling for the navbar to appear as a thin grey box at the top */
+        #navbar-container {
+            background-color: #f0f0f0;  /* Light grey background */
+            width: 100%;
+            padding: 30px 0;  /* Space above and below */
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1000;  /* Ensure it stays above the map */
+        }
+
+        #navbar-container .navbar {
+            margin: 0 auto;
+            width: 90%;  /* Control the width of the navbar */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-nav {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin: 0;
+        }
+
+        .nav-item {
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+
+        .nav-link {
+            color: #333;
+            text-decoration: none;
+        }
+
+        .nav-link:hover {
+            color: #007bff; /* Change color on hover */
+        }
+
+        /* Ensuring the map starts below the navbar */
+        body {
+            padding-top: 70px;  /* Ensure the map doesn't overlap with the navbar */
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar Container at the top of the page -->
+    <div id="navbar-container">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <a class="navbar-brand" href="#">BinThere</a>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'BinThere:about' %}">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'BinThere:map' %}">Map</a>
+                    </li>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Map Container -->
+    <h1>Recycling Bin Locations</h1>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Parse bin data passed from Django into a JavaScript object
+        var binData = JSON.parse('{{ bin_data|escapejs }}');  // Ensures the data is safely passed as JSON
+        console.log(binData); // Check the console to see if binData is correct
+
+        // Initialize map centered around University of Glasgow
+        var initialLatitude = binData.length > 0 ? binData[0].latitude : 55.8780;  // University of Glasgow Latitude
+        var initialLongitude = binData.length > 0 ? binData[0].longitude : -4.2900; // University of Glasgow Longitude
+
+        var map = L.map('map').setView([initialLatitude, initialLongitude], 18);  // Default zoom level
+
+        // Add OpenStreetMap tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Function to add markers and associate upvote/downvote functionality
+        function addBinMarkers(binData) {
+            binData.forEach(function(bin) {
+            var marker = L.marker([bin.latitude, bin.longitude]).addTo(map);
+        
+            // Create a HTML content for the popup
+            var popupContent = `
+            <div>
+                <h5>${bin.name} At ${bin.location_name}</h5>
+        
+                <button onclick="vote(${bin.id}, 1)">Upvote (${bin.upvotes})</button>
+                <button onclick="vote(${bin.id}, -1)">Downvote (${bin.downvotes})</button>
+            </div>
+            `;
+
+        
+            // Bind the popup to the marker
+            marker.bindPopup(popupContent);
+        });
+        }
+
+        // Function to handle the voting (either upvote or downvote)
+        function vote(binId, voteType) {
+        // Make an AJAX request to update the vote
+        $.ajax({
+            url: `/BinThere/vote/${binId}/${voteType}/`,  // Django URL pattern for voting
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',  // CSRF token for protection
+            },
+            success: function(response) {
+                // Update the vote counts on the popup dynamically
+                $('#upvotes-' + binId).text(response.upvotes);
+                $('#downvotes-' + binId).text(response.downvotes);
+            },
+            error: function(xhr, errmsg, err) {
+                alert('An error occurred while voting.');
+            }
+        });
+    }
+    
+    // Add the markers to the map
+        addBinMarkers(binData);
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
