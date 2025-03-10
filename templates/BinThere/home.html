@@ -7,6 +7,7 @@
 
 
 {% block body_block %}
+
 <style>
     /* Center the buttons in the middle of the screen */
     
@@ -17,13 +18,10 @@
     <h1 class="jumbotron-heading">BinThere</h1>
 
     <div class="btn-group" role="group" aria-label="Button group">
-        <a href="{% url 'BinThere:map' %}">
+        <a href="{% url 'BinThere:bin_map' %}">
             <button type="button" class="btn btn-primary">Bin Map</button>
         </a>
     </div>
-
-
-    <!--
     <strong>{{ boldmessage }}</strong><br /> 
     <h2>BinThere, DumpThat!</h2>
     <p>Visits: {{ visits }}</p>
@@ -39,6 +37,7 @@
     </button>
     <br />
     
+    <!-- Static image of ECO logo -->
     
     <img src="{% static "images/GreenLeaf.jpg" %}" alt="Picture of An Eco logo" />
 
@@ -46,11 +45,16 @@
     <br />
     <div id="msg">Hello! I'm a further example for JQuery testing.</div>
 
+    <div>
 
+     <img src="{{ MEDIA_URL }}RubbishInBin.jpg" alt="Picture of a Man Putting Rubbish in a Bin." /> 
+    
+    </div>
+    <div>
     
     
      <img src="{{ MEDIA_URL }}RubbishInBin.jpg" alt="Picture of a Man Putting Rubbish in a Bin." /> -->
     
-</div>
+    </div>
 
 {% endblock %}

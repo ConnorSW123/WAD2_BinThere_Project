@@ -16,13 +16,32 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import include
+from django.urls import reverse
 from BinThere import views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth import views as auth_views
+from registration.backends.simple.views import RegistrationView
+from BinThere.views import HomeView
+
+
+class MyRegistrationView(RegistrationView): 
+    def get_success_url(self, user):
+        return reverse('BinThere:register_profile')
+
+
 
 urlpatterns = [
-    path('', views.about, name='about'),
+    path('', HomeView.as_view(), name='home'),
     path('BinThere/', include('BinThere.urls')),
     # The above maps any URLs starting with BinThere/ to be handled by BinThere.
     path('admin/', admin.site.urls),
+    path('accounts/', include('registration.backends.simple.urls')),
+    path('password_change/', auth_views.PasswordChangeView.as_view(template_name='registration/password_change_form.html'), name='password_change'),
+    path('password_change_done/', auth_views.PasswordChangeDoneView.as_view(template_name='registration/password_change_done.html'), name='password_change_done'),
+    
+    # New line below -- don't forget the slash after register!
+    path('accounts/register/', MyRegistrationView.as_view(), name='registration_register'),
+
+    path('accounts/', include('registration.backends.simple.urls')),
 ] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

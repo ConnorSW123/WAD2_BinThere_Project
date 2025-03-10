@@ -1,0 +1,36 @@
+{% extends 'BinThere/base.html' %}
+
+{% block title_block %}
+    List of Bins
+{% endblock %}
+
+{% block body_block %}
+<h1>List of Bins</h1>
+
+{% if bins %}
+    <ul>
+        {% for bin in bins %}
+            <li>{{ bin.location.name }} - {{ bin.bin_type.name }}</li>
+        {% empty %}
+            <li>No bins available.</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No bins available.</p>
+{% endif %}
+
+{% if bins.has_previous %}
+    <a href="?page=1">&laquo; First</a>
+    <a href="?page={{ bins.previous_page_number }}">Previous</a>
+{% endif %}
+
+<span>Page {{ bins.number }} of {{ bins.paginator.num_pages }}</span>
+
+{% if bins.has_next %}
+    <a href="?page={{ bins.next_page_number }}">Next</a>
+    <a href="?page={{ bins.paginator.num_pages }}">Last &raquo;</a>
+{% endif %}
+
+{% endblock %}
+
+
