@@ -20,9 +20,9 @@ def about(request):
     visitor_cookie_handler(request)
     visits = request.session.get('visits', 1)
 
-    return render(request, 'BinThere/about.html',{'visits': visits})
+    return render(request, 'BinThere/home.html',{'visits': visits})
 
-class AboutView(View):
+class HomeView(View):
     def get(self, request): 
         context_dict = {}
 
@@ -30,7 +30,7 @@ class AboutView(View):
         context_dict['visits'] = request.session['visits']
 
         return render(request,
-                      'BinThere/about.html', 
+                      'BinThere/home.html', 
                       context_dict)
     
 # A helper method

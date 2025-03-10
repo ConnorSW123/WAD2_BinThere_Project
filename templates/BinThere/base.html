@@ -16,12 +16,90 @@
     <!-- Custom styles for this template -->
     <link href="https://getbootstrap.com/docs/4.2/examples/dashboard/dashboard.css" rel="stylesheet">
 
+     <!-- Google Fonts Link -->
+     <link href="https://fonts.googleapis.com/css2?family=Yomogi&display=swap" rel="stylesheet">
+
+    <style>
+
+        /*font and background*/
+        body {
+            font-family: 'Yomogi', sans-serif;
+            background-image: url("{% static 'images/Background.PNG' %}");
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+
+            height: 100%; /* Ensure the html and body take up the full height of the viewport */
+            margin: 0;
+            padding: 0;
+            
+        }
+
+        .container-fluid {
+            min-height: 100vh; /* Make the container take up at least the full viewport height */
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1; /* Allow the main content to grow and fill the remaining space */
+        }
+
+        footer {
+            flex-shrink: 0; /* Prevent the footer from shrinking */
+            margin-top: auto;
+        }
+
+        /* Change navbar background color */
+        .navbar {
+            background-color: #EBEBEB;
+            padding: 10px 20px;
+        }
+
+        /* Customize navbar brand (logo/link) */
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: bold;
+            color: #EBEBEB !important;
+        }
+
+        .navbar-brand img {
+            width: 30px;  /* Adjust the size of the logo */
+            height: auto;
+        }
+
+
+        /* Customize all navbar links */
+        .navbar-nav .nav-link {
+            color: black !important;
+            font-size: 18px;
+        }
+
+        /* Change color on hover */
+        .navbar-nav .nav-link:hover {
+            color: yellow !important;
+            text-decoration: underline;
+        }
+
+        /* Customize navbar toggle button (hamburger) */
+        .navbar-toggler {
+            border: 2px solid white;
+        }
+
+        .navbar-toggler-icon {
+            filter: invert(1); /* Makes the icon white */
+        }
+
+    </style>
 </head>
 
 <body>
     <header>
-        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark p-0">
-            <a class="navbar-brand p-2" href="{% url 'BinThere:about' %}">About</a>
+        <nav class="navbar navbar-expand-md fixed-top p-0">
+            <a class="navbar-brand p-2" href="{% url 'BinThere:home' %}"style="background-color: transparent; padding: 0px;">
+                <img src="{% static 'images/Home.png' %}" alt="Home" width="120">
+            </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -35,24 +113,14 @@
     </header>
 
     <div class="container-fluid">
-        <div class="row">
-            <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-                <div class="sidebar-sticky">
-                    {% block sidebar_block %}
-                    {% endblock %}
-                </div>
-            </nav>
-            
-            <main role="main" class="col-md-9  ml-sm-auto col-lg-10 px-4">
-                {% block body_block %}{% endblock %}
-                
-                <!-- FOOTER -->
-                <footer>
-                    <p class="float-right"><a href="#">Back to top</a></p>
-                    <p>&copy; 2020 Tango With Django 2 &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
-                </footer>
-            </main>
-        </div>
+        <main role="main" class="px-4">
+            {% block body_block %}{% endblock %}
+        </main>
+        <footer>
+            <p class="float-right"><a href="#">Back to top</a></p>
+            <p>&copy; 2020 Tango With Django 2 &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+        </footer>
+    </div>
     </div>
     
     <!-- Bootstrap core JavaScript -->

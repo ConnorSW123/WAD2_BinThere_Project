@@ -2,16 +2,28 @@
 {% load staticfiles %}
 
 {% block title_block %}
-    About
+    Home
 {% endblock %}
 
 
 {% block body_block %}
+<style>
+    /* Center the buttons in the middle of the screen */
+    
+</style>
 
-<div class="jumbotron p-4">
-    <div class="container">
+<div class="container">
         
-    <h1 class="jumbotron-heading">Welcome to BinThere!</h1>
+    <h1 class="jumbotron-heading">BinThere</h1>
+
+    <div class="btn-group" role="group" aria-label="Button group">
+        <a href="{% url 'BinThere:map' %}">
+            <button type="button" class="btn btn-primary">Bin Map</button>
+        </a>
+    </div>
+
+
+    <!--
     <strong>{{ boldmessage }}</strong><br /> 
     <h2>BinThere, DumpThat!</h2>
     <p>Visits: {{ visits }}</p>
@@ -27,7 +39,7 @@
     </button>
     <br />
     
-    <!-- Static image of Rango -->
+    
     <img src="{% static "images/GreenLeaf.jpg" %}" alt="Picture of An Eco logo" />
 
     
@@ -36,9 +48,9 @@
 
 
     
-    <!-- Media image of a cat -->
-     <img src="{{ MEDIA_URL }}RubbishInBin.jpg" alt="Picture of a Man Putting Rubbish in a Bin." /> 
     
-    </div>
+     <img src="{{ MEDIA_URL }}RubbishInBin.jpg" alt="Picture of a Man Putting Rubbish in a Bin." /> -->
+    
 </div>
+
 {% endblock %}
