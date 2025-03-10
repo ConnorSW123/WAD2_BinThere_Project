@@ -34,6 +34,7 @@ class HomeView(View):
         context_dict['visits'] = request.session['visits']
 
         return render(request,'BinThere/home.html', context_dict)
+     
     
 # A helper method
 def get_server_side_cookie(request, cookie, default_val=None):

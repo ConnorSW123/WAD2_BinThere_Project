@@ -22,7 +22,6 @@
             <button type="button" class="btn btn-primary">Bin Map</button>
         </a>
     </div>
-
     <strong>{{ boldmessage }}</strong><br /> 
     <h2>BinThere, DumpThat!</h2>
     <p>Visits: {{ visits }}</p>
@@ -39,6 +38,7 @@
     <br />
     
     <!-- Static image of ECO logo -->
+    
     <img src="{% static "images/GreenLeaf.jpg" %}" alt="Picture of An Eco logo" />
 
     
@@ -50,5 +50,11 @@
      <img src="{{ MEDIA_URL }}RubbishInBin.jpg" alt="Picture of a Man Putting Rubbish in a Bin." /> 
     
     </div>
-</div>
+    <div>
+    
+    
+     <img src="{{ MEDIA_URL }}RubbishInBin.jpg" alt="Picture of a Man Putting Rubbish in a Bin." /> -->
+    
+    </div>
+
 {% endblock %}

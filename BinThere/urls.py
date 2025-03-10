@@ -7,6 +7,7 @@ app_name = 'BinThere'
 from BinThere.views import HomeView, RegisterProfileView, ProfileView, ListProfilesView, AddBinView, BinListView, BinMapView
 
 
+
 urlpatterns = [
     #Updated path that point to the new about class-based views.
     path('', HomeView.as_view(), name='home'),
