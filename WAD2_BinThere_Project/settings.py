@@ -161,7 +161,10 @@ REGISTRATION_OPEN = True
 REGISTRATION_AUTO_LOGIN = True 
 
 # The URL that Django redirects users to after logging in.
-LOGIN_REDIRECT_URL = 'BinThere:index' 
+LOGIN_REDIRECT_URL = 'BinThere:home' 
+
+LOGOUT_REDIRECT_URL = '/BinThere/'
+
 
 # The page users are directed to if they are not logged in. 
 # # This was set in a previous chapter. 

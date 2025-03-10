@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from datetime import datetime;
 from django.views import View
 from django.shortcuts import render
@@ -9,29 +9,31 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
+from BinThere.forms import UserProfileForm
+from django.utils.decorators import method_decorator
+from django.contrib.auth.models import User
+from BinThere.models import UserProfile
+from BinThere.forms import BinForm
+from django.utils import timezone
+from django.urls import reverse_lazy
+from django.views.generic.edit import CreateView
+from django.views.generic import ListView
+from django.views.generic import TemplateView
+
+
+
+
 # Create your views here.
 
-
-def about(request):
-    # prints out whether the method is a GET or a POST 
-    print(request.method) 
-    # prints out the user name, if no one is logged in it prints `AnonymousUser` 
-    print(request.user) 
-    visitor_cookie_handler(request)
-    visits = request.session.get('visits', 1)
-
-    return render(request, 'BinThere/about.html',{'visits': visits})
-
-class AboutView(View):
+class HomeView(View):
     def get(self, request): 
         context_dict = {}
 
         visitor_cookie_handler(request) 
         context_dict['visits'] = request.session['visits']
 
-        return render(request,
-                      'BinThere/about.html', 
-                      context_dict)
+        return render(request,'BinThere/home.html', context_dict)
     
 # A helper method
 def get_server_side_cookie(request, cookie, default_val=None):
@@ -65,26 +67,36 @@ def visitor_cookie_handler(request):
 
 
 
-def map(request):
-    # Query all bins
-    bins = Bin.objects.all()
-    print(bins)
-    
-    # Format bin data to include relevant details (location, type, upvotes, downvotes)
-    bin_data = [
+
+class BinMapView(TemplateView):
+    template_name = 'BinThere/map.html'
+
+    def get_context_data(self, **kwargs):
+        # Get the context data from the parent class
+        context = super().get_context_data(**kwargs)
+        
+        # Query all bins
+        bins = Bin.objects.all()
+        
+        # Format bin data to include relevant details (location, type, upvotes, downvotes)
+        bin_data = [
             {'latitude': float(bin.location.latitude),  # Ensure it is a float for JavaScript
-            'longitude': float(bin.location.longitude),  # Ensure it is a float for JavaScript
-            'name': bin.bin_type.name,
-            'location_name': bin.location.name,
-            'upvotes': bin.upvotes,
-            'downvotes': bin.downvotes,}
+             'longitude': float(bin.location.longitude),  # Ensure it is a float for JavaScript
+             'name': bin.bin_type.name,
+             'location_name': bin.location.name,
+             'upvotes': bin.upvotes,
+             'downvotes': bin.downvotes}
             for bin in bins
         ]
-    
-    # Serialize the bin data into JSON format to pass it to the template
-    bin_data_json = json.dumps(bin_data)
-    
-    return render(request, 'BinThere/map.html', {'bin_data': bin_data_json})
+        
+        # Serialize the bin data into JSON format to pass it to the template
+        bin_data_json = json.dumps(bin_data)
+        
+        # Add the bin data to the context
+        context['bin_data'] = bin_data_json
+        
+        return context
+
 
 
 
@@ -134,3 +146,147 @@ def vote(request, bin_id, vote_type):
 
     # Return the updated vote counts
     return JsonResponse({'upvotes': bin_instance.upvotes, 'downvotes': bin_instance.downvotes})
+
+
+
+
+class RegisterProfileView(View):
+    @method_decorator(login_required)
+    def get(self, request):
+        form = UserProfileForm()
+        context_dict = {'form': form}
+        return render(request, 'BinThere/profile_registration.html', context_dict)
+
+    @method_decorator(login_required)
+    def post(self, request):
+        form = UserProfileForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            user_profile = form.save(commit=False)
+            user_profile.user = request.user  # Associate with the logged-in user
+            user_profile.save()
+
+            return redirect(reverse('BinThere:home'))  # Redirect to the home page
+
+        else:
+            print(form.errors)  # Print form validation errors to the console for debugging
+
+        context_dict = {'form': form}
+        return render(request, 'BinThere/profile_registration.html', context_dict)
+
+
+class ProfileView(View):
+    def get_user_details(self, username):
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return None
+
+        user_profile = UserProfile.objects.get_or_create(user=user)[0] 
+        form = UserProfileForm(instance=user_profile)
+        
+        return (user, user_profile, form) 
+
+    @method_decorator(login_required)
+    def get(self, request, username):
+        try:
+            (user, user_profile, form) = self.get_user_details(username)
+        except TypeError:
+            return redirect(reverse('BinThere:home'))
+
+        context_dict = {'user_profile': user_profile,
+                        'selected_user': user, 
+                        'form': form}
+
+        return render(request, 'BinThere/profile.html', context_dict)
+
+    @method_decorator(login_required)
+    def post(self, request, username):
+        try:
+            (user, user_profile, form) = self.get_user_details(username)
+        except TypeError:
+            return redirect(reverse('BinThere:home'))
+
+        # Populate form with new data
+        form = UserProfileForm(request.POST, request.FILES, instance=user_profile)
+
+        if form.is_valid(): 
+            form.save(commit=True)
+            return redirect(reverse('BinThere:profile', kwargs={'username': user.username}))  # Redirect to updated profile
+        else:
+            print(form.errors)  # Debugging output
+
+        context_dict = {'user_profile': user_profile,
+                        'selected_user': user, 
+                        'form': form}
+
+        return render(request, 'BinThere/profile.html', context_dict)
+
+
+
+
+class ListProfilesView(View): 
+    @method_decorator(login_required) 
+    def get(self, request):
+        profiles = UserProfile.objects.all()
+
+        return render(request,
+        'BinThere/list_profiles.html',
+        {'user_profile_list': profiles})
+    
+
+@method_decorator(login_required, name='dispatch')  # Ensures the user is logged in before accessing the view
+class AddBinView(CreateView):
+    model = Bin
+    form_class = BinForm
+    template_name = 'BinThere/addbin.html'
+
+    def get_initial(self):
+        initial = super().get_initial()
+        return initial
+
+    def form_valid(self, form):
+        # Get the logged-in user
+        user = self.request.user
+        bin_instance = form.save(commit=False)
+        bin_instance.added_by = user  # Set the user who added the bin
+
+        # Check if a new location is being created
+        location = form.cleaned_data['location']
+        latitude = form.cleaned_data['latitude']
+        longitude = form.cleaned_data['longitude']
+        location_name = form.cleaned_data['location_name']
+
+        if not location:  # If no location is selected, create a new location
+            if latitude and longitude and location_name:
+                # Create a new Location
+                location = Location.objects.create(
+                    name=location_name,
+                    latitude=latitude,
+                    longitude=longitude
+                )
+            else:
+                # If the location is not provided correctly, we can't create the bin
+                form.add_error('location', 'You must either select an existing location or provide a name, latitude, and longitude to create a new location.')
+                return self.form_invalid(form)
+
+        bin_instance.location = location  # Associate the bin with the location
+        bin_instance.save()  # Save the bin instance
+        return redirect(reverse_lazy('BinThere:bin_map'))  # Redirect to the bin map after adding the bin
+
+    def form_invalid(self, form):
+        # You can log the form errors here if needed
+        print(form.errors)
+        return self.render_to_response({'form': form})
+
+
+
+class BinListView(ListView):
+    model = Bin
+    template_name = 'BinThere/bin_list.html'
+    context_object_name = 'bins'  # The context variable that will be passed to the template
+    paginate_by = 10  # Optional: Paginate the bins (if you want to display them in pages)
+    
+    def get_queryset(self):
+        # Ensure consistent ordering for pagination
+        return Bin.objects.all().order_by('created_at') 

@@ -1,0 +1,44 @@
+{% extends 'BinThere/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %} 
+    User Profiles
+{% endblock %}
+
+{% block body_block %}
+<div class="jumbotron p-4">
+    <div class="container">
+        <h1 class="jumbotron-heading">User Profiles</h1>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        {% if user_profile_list %}
+        <div class="panel-body">
+            <div class="list-group">
+            {% for list_user in user_profile_list %}
+                <div class="list-group-item d-flex align-items-center">
+                    <!-- Profile Image -->
+                    <img src="{% if list_user.picture %}{{ list_user.picture.url }}{% else %}https://loremflickr.com/64/64/people{% endif %}" 
+                         alt="Profile Picture" 
+                         class="rounded-circle" 
+                         width="64" 
+                         height="64">
+                    
+                    <!-- Username Link -->
+                    <h4 class="list-group-item-heading ms-3">
+                        <a href="{% url 'BinThere:profile' username=list_user.user.username %}">
+                            {{ list_user.user.username }}
+                        </a>
+                    </h4>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <p>There are no users present on BinThere.</p>
+    {% endif %}
+</div>
+</div>
+{% endblock %}
