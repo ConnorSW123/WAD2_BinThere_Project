@@ -9,19 +9,85 @@
 {% block body_block %}
 
 <style>
-    /* Center the buttons in the middle of the screen */
-    
+    /* Center the container vertically and horizontally, but raise it a bit */
+    .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;  /* Align items to the top */
+        align-items: center;
+        min-height: 90vh;  /* Reduced height to push content higher */
+        margin-top: 150px;  /* Optional: Push the content down a bit */
+    }
+
+    /* Style for the header */
+    .jumbotron-heading {
+        margin-bottom: 30px; /* Space between header and buttons */
+        margin-right: 75px;
+        padding: 10px 20px;
+        text-align: center;
+        border: 2px solid #000;  /* Border around the title */
+        text-decoration: underline; /* Underline the title */
+        background-color: #EBEBEB;  /* Button-like background */
+        color: black; /* Black text */
+        border-radius: 15px;  /* Rounded corners */
+    }
+
+    /* Button wrapper container to hold both left and right groups */
+    .button-wrapper {
+        display: flex;
+        justify-content: space-between;
+        width: 60%;  /* Full width of the screen */
+        max-width: 1000px;  /* Optional: limit max width */
+        padding: 10px 10px; /* Add horizontal padding to prevent buttons from sticking to edges */
+        border: 2px solid #000; /* Box around the buttons */
+        border-radius: 15px;  /* Rounded corners */
+        background-color: #EBEBEB;  /* Button-like background */
+    }
+
+    /* Left side button group */
+    .btn-group-left {
+        display: flex;
+        gap: 10px;  /* Space between buttons */
+    }
+
+    /* Right side button group */
+    .btn-group-right {
+        display: flex;
+        gap: 10px;  /* Space between buttons */
+    }
+
 </style>
 
 <div class="container">
-        
     <h1 class="jumbotron-heading">BinThere</h1>
+    
 
-    <div class="btn-group" role="group" aria-label="Button group">
-        <a href="{% url 'BinThere:bin_map' %}">
-            <button type="button" class="btn btn-primary">Bin Map</button>
-        </a>
+    <div class="button-wrapper">
+        <!-- Left group of buttons -->
+        <div class="btn-group-left">
+            <a href="{% url 'BinThere:bin_map' %}">
+                <button type="button" class="btn btn-primary">Bin Map</button>
+            </a>
+            <a href="{% url 'BinThere:addbin' %}">
+                <button type="button" class="btn btn-primary">Add Bin</button>
+            </a>
+        </div>
+
+        <!-- Right group of buttons -->
+        <div class="btn-group-right">
+            <a href="{% url 'BinThere:bin_map' %}">
+                <button type="button" class="btn btn-primary">Change Password</button>
+            </a>
+            <a href="{% url 'BinThere:register' %}">
+                <button type="button" class="btn btn-primary">Add New Bin</button>
+            </a>
+        </div>
     </div>
+</div>
+
+
+
+    <!-- 
     <strong>{{ boldmessage }}</strong><br /> 
     <h2>BinThere, DumpThat!</h2>
     <p>Visits: {{ visits }}</p>
@@ -37,7 +103,7 @@
     </button>
     <br />
     
-    <!-- Static image of ECO logo -->
+    Static image of ECO logo
     
     <img src="{% static "images/GreenLeaf.jpg" %}" alt="Picture of An Eco logo" />
 

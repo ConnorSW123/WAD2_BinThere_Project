@@ -56,6 +56,8 @@
          .navbar {
              background-color: #EBEBEB;
              padding: 10px 20px;
+             border: 2px solid #000; /* Box around the buttons */
+             border-radius: 15px; /* Rounded corners to match button style */
          }
  
          /* Customize navbar brand (logo/link) */
@@ -63,6 +65,10 @@
              font-size: 24px;
              font-weight: bold;
              color: #EBEBEB !important;
+             border: 2px solid #000; /* Box around the buttons */
+             padding: 10px;
+             border-radius: 15px;
+             margin: 5px;
          }
  
          .navbar-brand img {
@@ -75,6 +81,12 @@
          .navbar-nav .nav-link {
              color: black !important;
              font-size: 18px;
+             background-color: #EBEBEB; /* Same background as button */
+             padding: 10px;
+             border-radius: 15px;
+             margin: 5px;
+             text-decoration: none;
+             border: 2px solid #000; /* Box around the buttons */
          }
  
          /* Change color on hover */
@@ -91,6 +103,33 @@
          .navbar-toggler-icon {
              filter: invert(1); /* Makes the icon white */
          }
+
+
+        /* Apply styles to all buttons */
+        .btn {
+            background-color: #EBEBEB;  /* Light gray background */
+            color: black;  /* White text */
+            border-color: black;
+            cursor: pointer;  /* Pointer cursor on hover */
+            border-radius: 15px;  /* Rounded corners */
+            transition: background-color 0.3s ease;  /* Smooth transition */
+        }
+
+        /* Apply hover effect to all buttons */
+        .btn:hover {
+            background-color: #45a049;  /* Darker green on hover */
+        }
+
+        /* Apply focus styles for accessibility */
+        .btn:focus {
+            outline: none;  /* Remove outline */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);  /* Add shadow when focused */
+        }
+
+        /* Apply active (clicked) state */
+        .btn:active {
+            background-color: #3e8e41;  /* Darker green when clicked */
+        }
  
      </style>
 
@@ -109,8 +148,8 @@
             </button>
             
             <div class="collapse navbar-collapse" id="navbarCollapse">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'BinThere:bin_map' %}">Map</a></li>
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'BinThere:bin_map' %}">Bin Map</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'BinThere:bin_list' %}">BinList</a></li>
                     {% if user.is_authenticated %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'auth_logout' %}?next=/BinThere">Logout</a></li>
@@ -120,8 +159,13 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'BinThere:list_profiles' %}">List Profiles</a></li>
                     {% else %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'registration_register' %}">Register Here</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'auth_login' %}">Login</a></li>
+
                     {% endif %}
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    
+                    <li class="nav-item"><a class="nav-link" href="{% url 'auth_login' %}">Sign In</a></li>
+                    
                 </ul>
             </div>
         </nav>
