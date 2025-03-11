@@ -12,10 +12,20 @@ class BinForm(forms.ModelForm):
         required=False,  # This will allow the user to leave this field blank if they want to add a new location
         help_text="Select the location for the bin, or leave it blank to create a new location."
     )
-    bin_type = forms.ModelChoiceField(
-        queryset=BinType.objects.all(),
-        help_text="Select the type of the bin."
+
+    location_name = forms.CharField(
+        max_length=100, required=False,  # Only required if a new location is being created
+        help_text="Enter the name for the new location."
     )
+    
+    # 6 checkboxes for features
+    General = forms.BooleanField(required=False, label='General')
+    Plastic = forms.BooleanField(required=False, label='Plastic')
+    Paper = forms.BooleanField(required=False, label='Paper')
+    Glass = forms.BooleanField(required=False, label='Glass')
+    Metal = forms.BooleanField(required=False, label='Metal')
+    Organic = forms.BooleanField(required=False, label='Organic')
+    
     latitude = forms.DecimalField(
         max_digits=9, decimal_places=6, required=False,  # Will be used only if a new location is created
         help_text="Enter the latitude of the new location."
@@ -24,10 +34,17 @@ class BinForm(forms.ModelForm):
         max_digits=9, decimal_places=6, required=False,  # Will be used only if a new location is created
         help_text="Enter the longitude of the new location."
     )
-    location_name = forms.CharField(
-        max_length=100, required=False,  # Only required if a new location is being created
-        help_text="Enter the name for the new location."
+
+    # Overview text field
+    overview = forms.CharField(
+        widget=forms.Textarea(attrs={'rows': 4}),
+        required=True,
+        help_text="Enter a brief overview of the bin."
     )
+
+    # Image upload field
+    picture = forms.ImageField(required=False)
+
     upvotes = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
     downvotes = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
 
