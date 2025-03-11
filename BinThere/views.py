@@ -95,55 +95,68 @@ class BinMapView(TemplateView):
 
 
 
-@csrf_exempt
-@login_required
-def vote(request, bin_id, vote_type):
-    bin_instance = get_object_or_404(Bin, id=bin_id)
-    user = request.user
+@method_decorator(csrf_exempt,name='dispatch')
+@method_decorator(login_required,name='dispatch') 
+class Vote(View):
 
-    # Ensure that the vote_type is valid
-    if vote_type not in [1, -1]:
-        return JsonResponse({'error': 'Invalid vote type'}, status=400)
-
-    # Check if the user has already voted on this bin
-    existing_vote = Vote.objects.filter(bin=bin_instance, user=user).first()
-
-    if existing_vote:
-        # If the user has voted, update the vote
-        if existing_vote.vote == vote_type:
-            # If the user tries to vote the same way again, remove the vote
-            existing_vote.delete()
-            if vote_type == 1:
-                bin_instance.upvotes -= 1
-            else:
-                bin_instance.downvotes -= 1
-        else:
-            # Update the vote to the new type
-            existing_vote.vote = vote_type
-            existing_vote.save()
-
-            if vote_type == 1:
-                bin_instance.upvotes += 1
-                bin_instance.downvotes -= 1
-            else:
-                bin_instance.downvotes += 1
-                bin_instance.upvotes -= 1
-    else:
-        # If the user has not voted yet, create a new vote
-        Vote.objects.create(bin=bin_instance, user=user, vote=vote_type)
-
+    def get(self, request, bin_id, vote_type):
+        return self.handleVote(request, bin_id, vote_type)
+    
+    def control_vote_count(self,bin_instance, vote_type, changed_vote=False):
         if vote_type == 1:
-            bin_instance.upvotes += 1
+            bin_instance.upvotes -= 1
+
+            if changed_vote:
+               bin_instance.downvotes += 1 
         else:
-            bin_instance.downvotes += 1
+            bin_instance.downvotes -= 1
 
-    bin_instance.save()
+            if changed_vote:
+                bin_instance.upvotes += 1    
+    
+    def handleVote(self, request, bin_id, vote_type):
+        bin_instance = get_object_or_404(Bin, id=bin_id)
+        user = request.user
 
-    # Return the updated vote counts
-    return JsonResponse({'upvotes': bin_instance.upvotes, 'downvotes': bin_instance.downvotes})
+        # Ensure that the vote_type is valid
+        if vote_type not in [1, -1]:
+            return JsonResponse({'error': 'Invalid vote type'}, status=400)
+        
+        # Check if the user has already voted on this bin
+        existing_vote = Vote.objects.filter(bin=bin_instance, user=user).first()
+        if existing_vote:
+            # If the user has voted, update the vote
+            if existing_vote.vote == vote_type:
+            # If the user tries to vote the same way again, remove the vote
+                existing_vote.delete()
+                if vote_type == 1:
+                    self.control_vote_count(bin_instance, vote_type)
+                else:
+                    self.control_vote_count(bin_instance, vote_type)
+            else:
+                
 
+                if existing_vote.vote == 1:
+                    self.control_vote_count(bin_instance, vote_type, True)
+                else:
+                    self.control_vote_count(bin_instance, vote_type, True)
 
+                # Update the vote to the new type
+                existing_vote.vote = vote_type
+                existing_vote.save()
+        else:
+            # If the user has not voted yet, create a new vote
+            Vote.objects.create(bin=bin_instance, user=user, vote=vote_type)
 
+            if vote_type == 1:
+                self.control_vote_count(bin_instance, vote_type, True)
+            else:
+                self.control_vote_count(bin_instance, vote_type, True)
+
+        bin_instance.save()
+
+        # Return the updated vote counts
+        return JsonResponse({'upvotes': bin_instance.upvotes, 'downvotes': bin_instance.downvotes})
 
 class RegisterProfileView(View):
     @method_decorator(login_required)
