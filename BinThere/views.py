@@ -1,23 +1,23 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from datetime import datetime;
 from django.views import View
-from .models import Location, Bin, Vote
+from .models import Location, Bin
 import json
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
-from BinThere.forms import UserProfileForm, BinForm
+from BinThere.forms import UserProfileForm, BinForm, UserForm
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User
 from BinThere.models import UserProfile, BinType
 from django.utils import timezone
 from django.views.generic.edit import CreateView
-from django.views.generic import ListView, TemplateView, FormView, UpdateView
+from django.views.generic import ListView, TemplateView, FormView, UpdateView, DeleteView
 from django.contrib import messages
-
-
-
+from django.contrib.auth import login
+from geopy.distance import geodesic
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.http import Http404
 
 
 # Create your views here.
@@ -64,9 +64,6 @@ def visitor_cookie_handler(request):
 
 
 
-
-
-
 class BinMapView(TemplateView):
     template_name = 'BinThere/map.html'
 
@@ -99,101 +96,74 @@ class BinMapView(TemplateView):
 
         return context
 
+class VoteView(View):
+    def post(self, request, bin_id, vote_type):
+        try:
+            bin = Bin.objects.get(id=bin_id)
+        except Bin.DoesNotExist:
+            return JsonResponse({'error': 'Bin not found'}, status=404)
 
-
-
-
-
-
-
-
-
-@method_decorator(csrf_exempt,name='dispatch')
-@method_decorator(login_required,name='dispatch') 
-class Vote(View):
-
-    def get(self, request, bin_id, vote_type):
-        return self.handleVote(request, bin_id, vote_type)
-    
-    def control_vote_count(self,bin_instance, vote_type, changed_vote=False):
+        # Handle upvotes and downvotes based on vote_type (1 for upvote, -1 for downvote)
         if vote_type == 1:
-            bin_instance.upvotes -= 1
-
-            if changed_vote:
-               bin_instance.downvotes += 1 
+            bin.upvotes += 1
+        elif vote_type == -1:
+            bin.downvotes += 1
         else:
-            bin_instance.downvotes -= 1
-
-            if changed_vote:
-                bin_instance.upvotes += 1    
-    
-    def handleVote(self, request, bin_id, vote_type):
-        bin_instance = get_object_or_404(Bin, id=bin_id)
-        user = request.user
-
-        # Ensure that the vote_type is valid
-        if vote_type not in [1, -1]:
             return JsonResponse({'error': 'Invalid vote type'}, status=400)
-        
-        # Check if the user has already voted on this bin
-        existing_vote = Vote.objects.filter(bin=bin_instance, user=user).first()
-        if existing_vote:
-            # If the user has voted, update the vote
-            if existing_vote.vote == vote_type:
-            # If the user tries to vote the same way again, remove the vote
-                existing_vote.delete()
-                if vote_type == 1:
-                    self.control_vote_count(bin_instance, vote_type)
-                else:
-                    self.control_vote_count(bin_instance, vote_type)
-            else:
-                
 
-                if existing_vote.vote == 1:
-                    self.control_vote_count(bin_instance, vote_type, True)
-                else:
-                    self.control_vote_count(bin_instance, vote_type, True)
-
-                # Update the vote to the new type
-                existing_vote.vote = vote_type
-                existing_vote.save()
-        else:
-            # If the user has not voted yet, create a new vote
-            Vote.objects.create(bin=bin_instance, user=user, vote=vote_type)
-
-            if vote_type == 1:
-                self.control_vote_count(bin_instance, vote_type, True)
-            else:
-                self.control_vote_count(bin_instance, vote_type, True)
-
-        bin_instance.save()
-
-        # Return the updated vote counts
-        return JsonResponse({'upvotes': bin_instance.upvotes, 'downvotes': bin_instance.downvotes})
+        bin.save()  # Save the updated bin with the new vote count
+        return JsonResponse({'upvotes': bin.upvotes, 'downvotes': bin.downvotes})
 
 class RegisterProfileView(View):
-    @method_decorator(login_required)
     def get(self, request):
-        form = UserProfileForm()
-        context_dict = {'form': form}
+        # Create form instances for user and user profile
+        user_form = UserForm()
+        profile_form = UserProfileForm()
+
+        # Pass forms to the context for rendering
+        context_dict = {'user_form': user_form, 'profile_form': profile_form}
         return render(request, 'BinThere/profile_registration.html', context_dict)
 
-    @method_decorator(login_required)
     def post(self, request):
-        form = UserProfileForm(request.POST, request.FILES)
+        # Create form instances with POST data
+        user_form = UserForm(request.POST)
+        profile_form = UserProfileForm(request.POST, request.FILES)
 
-        if form.is_valid():
-            user_profile = form.save(commit=False)
-            user_profile.user = request.user  # Associate with the logged-in user
+        if user_form.is_valid() and profile_form.is_valid():
+            # First save the user (which creates the username, email, etc.)
+            user = user_form.save(commit=False)
+
+            # Ensure username is set if it's empty (using get_or_create for user)
+            if not user.username:
+                # Try to get or create a user with the provided username
+                user, created = User.objects.get_or_create(
+                    username=user.email.split('@')[0],  # Automatically generate username from email
+                    defaults={'email': user.email}  # If the username doesn't exist, set email
+                )
+            
+            # Save the user
+            user.save()
+
+            # Now save the user profile
+            user_profile = profile_form.save(commit=False)
+            user_profile.user = user  # Attach the user to the profile
             user_profile.save()
 
-            return redirect(reverse('BinThere:home'))  # Redirect to the home page
+            # Log in the user
+            login(request, user)
 
+            # Redirect to the profile page after successful registration
+            return redirect(reverse('BinThere:profile', kwargs={'username': user.username}))
+
+        # If the form is not valid, print errors and return to the registration page
         else:
-            print(form.errors)  # Print form validation errors to the console for debugging
+            print(user_form.errors)
+            print(profile_form.errors)
 
-        context_dict = {'form': form}
+        # If forms are invalid, render the page with forms and errors
+        context_dict = {'user_form': user_form, 'profile_form': profile_form}
         return render(request, 'BinThere/profile_registration.html', context_dict)
+
 
 
 class ProfileView(View):
@@ -203,23 +173,25 @@ class ProfileView(View):
         except User.DoesNotExist:
             return None
 
-        user_profile = UserProfile.objects.get_or_create(user=user)[0] 
+        user_profile, created = UserProfile.objects.get_or_create(user=user)
         form = UserProfileForm(instance=user_profile)
-        
-        return (user, user_profile, form) 
+
+        return (user, user_profile, form)
 
     @method_decorator(login_required)
     def get(self, request, username):
         try:
             (user, user_profile, form) = self.get_user_details(username)
         except TypeError:
-            return redirect(reverse('BinThere:home'))
+            return redirect('BinThere:home')
 
-        context_dict = {'user_profile': user_profile,
-                        'selected_user': user, 
-                        'form': form}
-
+        context_dict = {'user_profile': user_profile, 'selected_user': user, 'form': form}
         return render(request, 'BinThere/profile.html', context_dict)
+
+
+
+
+
 
     @method_decorator(login_required)
     def post(self, request, username):
@@ -256,7 +228,7 @@ class ListProfilesView(View):
         {'user_profile_list': profiles})
     
 
-@method_decorator(login_required, name='dispatch')  # Ensures the user is logged in before accessing the view
+@method_decorator(login_required, name='dispatch')
 class BinCreateView(CreateView):
     model = Bin
     form_class = BinForm
@@ -264,17 +236,29 @@ class BinCreateView(CreateView):
     success_url = reverse_lazy('BinThere:bin_map')
 
     def form_valid(self, form):
+        # Debugging: Check if the user is logged in
+        if not self.request.user.is_authenticated:
+            messages.error(self.request, "You need to be logged in to create a bin.")
+            return redirect('login')  # Or any other redirect URL for login
+        
+        print(self.request.user.username)  # Debug: Check the user object
+        
         # Check if an existing bin is selected
         existing_bin = form.cleaned_data.get('existing_bin')
         if existing_bin:
             messages.error(self.request, "You selected an existing bin. Please use the update feature instead.")
             return redirect('BinThere:bin_map')
 
-        # Create or get location
+        # Check if location data is provided for new bin creation
         location_name = form.cleaned_data['location_name']
         latitude = form.cleaned_data['latitude']
         longitude = form.cleaned_data['longitude']
 
+        if not location_name or latitude is None or longitude is None:
+            messages.error(self.request, "You must provide location details (name, latitude, longitude) to create a new bin.")
+            return redirect('BinThere:add_bin')  # Redirect back to form with error message
+
+        # Create or get location (we should be creating a new location or using an existing one)
         location, created = Location.objects.get_or_create(
             name=location_name,
             defaults={'latitude': latitude, 'longitude': longitude}
@@ -282,17 +266,29 @@ class BinCreateView(CreateView):
 
         # Create the Bin instance (but don't save it yet)
         bin_instance = form.save(commit=False)
+
+        # Assign the location to the bin
         bin_instance.location = location
-        bin_instance.added_by = self.request.user
+
+        # Assign the selected user (added_by) from the form
+        bin_instance.added_by = self.request.user  # Get the selected user - Should work now
+
+        # Set default upvotes and downvotes to 0
+        bin_instance.upvotes = 0
+        bin_instance.downvotes = 0
+
+        # Save the bin instance
         bin_instance.save()
 
-        # Assign bin types to the bin instance
-        bin_types = form.cleaned_data['bin_types']  # Getting the bin_types from the form
-        bin_instance.bin_types.set(bin_types)  # Set the many-to-many relationship
-        bin_instance.save()
+        # Assign the selected bin types to the bin instance
+        bin_types = form.cleaned_data['bin_types']
+        bin_instance.bin_types.set(bin_types)  # Many-to-many relationship
+        bin_instance.save()  # Save changes after assigning bin types
 
         messages.success(self.request, "New bin created successfully.")
-        return redirect('BinThere:bin_map')
+        return redirect('BinThere:bin_map')  # Redirect to map after successful creation
+
+
 
 
 
@@ -318,19 +314,52 @@ class BinUpdateView(UpdateView):
         return redirect('BinThere:bin_map')
 
 
-
-
-
-
 class BinListView(ListView):
     model = Bin
     template_name = 'BinThere/bin_list.html'
-    context_object_name = 'bins'  # The context variable that will be passed to the template
-    paginate_by = 10  # Optional: Paginate the bins (if you want to display them in pages)
-    
+    context_object_name = 'bins'
+    paginate_by = 10  
+
     def get_queryset(self):
-        # Ensure consistent ordering for pagination
-        return Bin.objects.all().order_by('created_at') 
+        queryset = Bin.objects.all()
+        search_query = self.request.GET.get('search', None)
+        location_query = self.request.GET.get('location', None)
+        user_lat = self.request.GET.get('latitude', None)
+        user_lon = self.request.GET.get('longitude', None)
+
+        # Filter by bin type
+        if search_query:
+            queryset = queryset.filter(bin_types__name__icontains=search_query)
+
+        # Filter by location name
+        if location_query:
+            queryset = queryset.filter(location__name__icontains=location_query)
+
+        # Filter by geolocation (5km radius)
+        if user_lat and user_lon:
+            try:
+                user_location = (float(user_lat), float(user_lon))
+                nearby_bins = []
+
+                for bin in queryset:
+                    bin_location = (float(bin.location.latitude), float(bin.location.longitude))
+                    distance = geodesic(user_location, bin_location).km
+                    if distance <= 5:
+                        nearby_bins.append(bin)
+
+                queryset = nearby_bins  
+            except ValueError:
+                pass  
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['bin_types'] = BinType.objects.all()
+        return context
+
+
+
 
 
 
@@ -349,3 +378,32 @@ class AddBinTypeView(FormView):
     def form_invalid(self, form):
         # Handle invalid form submission
         return self.render_to_response(self.get_context_data(form=form))
+    
+
+
+class DeleteBinView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Bin
+    context_object_name = 'bin'
+    success_url = reverse_lazy('BinThere:bin_list')
+
+    def test_func(self):
+        """
+        Ensure only bin owners or superusers can delete bins.
+        """
+        bin_instance = self.get_object()
+        return self.request.user == bin_instance.added_by or self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        """
+        Show a 404 error instead of redirecting for unauthorized access.
+        """
+        raise Http404("You do not have permission to delete this bin.")
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Add a success message before redirecting after deletion.
+        """
+        messages.success(self.request, "Bin deleted successfully!")
+        return super().delete(request, *args, **kwargs)
+
+    
