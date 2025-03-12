@@ -79,7 +79,7 @@
         <div class="btn-group-right">
             {% if user.is_authenticated %}
 
-            <a href="{% url 'auth_logout' %}?next=/BinThere"> 
+            <a href="{% url 'auth_password_change' %}?next=/BinThere"> 
                 <button type="button" class="btn btn-primary">Change Password</button>
             {% endif %}
 
