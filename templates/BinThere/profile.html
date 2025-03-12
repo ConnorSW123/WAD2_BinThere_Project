@@ -6,34 +6,33 @@
 {% endblock %}
 
 {% block body_block %}
-<div class="jumbotron p-4">
-    <div class="container">
-        <h1 class="jumbotron-heading">{{ selected_user.username }}'s Profile</h1>
-    </div>
-</div>
-
-<div class="container">
-    <div class="row">
-        <img src="{% if user_profile.picture %}{{ user_profile.picture.url }}{% else %}https://loremflickr.com/128/128/people{% endif %}" 
-             alt="{{ selected_user.username }}'s profile image"
-             class="rounded-circle" 
-             width="128" 
-             height="128">
-        <br />
-        <div>
-            {% if selected_user == user %}
-            <form method="post" action="." enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ form.as_p }}
-
-                <input type="submit" value="Update" />
-            </form>
-            {% else %}
-            <p>
-                <strong>Website:</strong>
-                <a href="{{ user_profile.website }}">{{ user_profile.website }}</a>
-            </p>
-            {% endif %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="text-center mb-4">{{ selected_user.username }}'s Profile</h1>
+            <div class="text-center">
+                <img src="{% if user_profile.picture %}{{ user_profile.picture.url }}{% else %}https://loremflickr.com/128/128/people{% endif %}" 
+                     alt="{{ selected_user.username }}'s profile image"
+                     class="rounded-circle" 
+                     width="128" 
+                     height="128">
+            </div>
+            <div class="text-center mt-4">
+                {% if selected_user == user %}
+                    <form method="post" action="." enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="text-center" style="margin-top: 50px;">
+                            <input type="submit" value="Update" class="btn btn-primary" />
+                        </div>
+                    </form>
+                {% else %}
+                    <p>
+                        <strong>Website:</strong>
+                        <a href="{{ user_profile.website }}">{{ user_profile.website }}</a>
+                    </p>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>
