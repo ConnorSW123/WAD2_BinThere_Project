@@ -78,6 +78,7 @@
                                 {{ form.picture.help_text }}<br />
                                 {{ form.picture }}
                             </div>
+
                         
                             <div class="form-group text-center">
                                 <button class="btn btn-secondary btn-lg" type="submit" id="submit-btn">
@@ -92,6 +93,7 @@
         </div>
     </div>
 
+    <!-- JavaScript -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const form = document.getElementById("bin_form");
@@ -129,6 +131,5 @@
             updateFormAction(); // Ensure correct action on page load
         });
     </script>
-    
-    
+
 {% endblock %}

@@ -170,3 +170,4 @@ LOGOUT_REDIRECT_URL = '/BinThere/'
 # # This was set in a previous chapter. 
 # The registration package uses this, too. 
 LOGIN_URL = 'auth_login'
+

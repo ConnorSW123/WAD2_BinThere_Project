@@ -59,12 +59,10 @@ class BinType(models.Model):
         return self.name
 
 
-
-
 class Bin(models.Model):
     location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name="bins")
     bin_types = models.ManyToManyField(BinType, related_name="bins")  # Allow multiple bin types
-    added_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    added_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     upvotes = models.IntegerField(default=0)
     downvotes = models.IntegerField(default=0)

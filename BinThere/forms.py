@@ -1,11 +1,7 @@
 from django import forms
-from BinThere.models import Location, BinType, Bin, Vote
+from BinThere.models import BinType, Bin
 from django.contrib.auth.models import User
 from BinThere.models import UserProfile
-
-
-
-
 
 class BinForm(forms.ModelForm):
     existing_bin = forms.ModelChoiceField(
@@ -13,7 +9,7 @@ class BinForm(forms.ModelForm):
         required=False,  # Allows creating a new bin if left blank
         help_text="Select an existing bin to add bin types, or leave blank to create a new bin."
     )
-    
+
     location_name = forms.CharField(
         max_length=100, required=False, help_text="Enter the name for the new location."
     )
@@ -23,7 +19,7 @@ class BinForm(forms.ModelForm):
     longitude = forms.DecimalField(
         max_digits=9, decimal_places=6, required=False, help_text="Enter the longitude."
     )
-    
+
     bin_types = forms.ModelMultipleChoiceField(
         queryset=BinType.objects.all(),
         required=True,
@@ -31,25 +27,26 @@ class BinForm(forms.ModelForm):
         help_text="Select bin types"
     )
 
-    
     overview = forms.CharField(
         widget=forms.Textarea(attrs={'rows': 4}),
         required=False,
         help_text="Enter a brief overview of the bin."
     )
-    
+
     picture = forms.ImageField(required=False)
-    
+
+    # Hidden fields for likes (upvotes) and dislikes (downvotes)
+    upvotes = forms.IntegerField(initial=0, widget=forms.HiddenInput())
+    downvotes = forms.IntegerField(initial=0, widget=forms.HiddenInput())
+
+   
     class Meta:
         model = Bin
         fields = (
-            'existing_bin', 'location_name', 'latitude', 'longitude', 'bin_types', 'picture'
+            'existing_bin', 'location_name', 'latitude', 'longitude', 'bin_types', 'overview', 'picture', 'upvotes', 'downvotes',
         )
 
     def clean(self):
-        """
-        Ensure that either an existing bin is selected OR a new bin's location data is provided.
-        """
         cleaned_data = super().clean()
         existing_bin = cleaned_data.get("existing_bin")
         location_name = cleaned_data.get("location_name")
@@ -69,28 +66,27 @@ class BinForm(forms.ModelForm):
         return cleaned_data
 
 
-
-
-
-
-
-
 class BinTypeForm(forms.Form):
     bin_type = forms.ModelChoiceField(queryset=BinType.objects.all(), empty_label="Select a Bin Type")
 
 
 
-
+class BinSearchForm(forms.Form):
+    bin_type = forms.ModelChoiceField(queryset=BinType.objects.all(), required=False, label="Bin Type")
+    latitude = forms.FloatField(required=False, label="Latitude")  # Optional latitude for location-based search
+    longitude = forms.FloatField(required=False, label="Longitude")  # Optional longitude for location-based search
+    radius = forms.FloatField(required=False, label="Radius (km)", initial=5)  # Radius for proximity search (in km)
 
 
 class UserForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput())
+    password = forms.CharField(widget=forms.PasswordInput())  # Password field
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password',)
+        fields = ('username', 'email', 'password')
+
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ('website', 'picture',)
+        fields = ('website', 'picture') 
