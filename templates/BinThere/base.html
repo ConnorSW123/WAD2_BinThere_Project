@@ -58,6 +58,7 @@
              padding: 10px 20px;
              border: 2px solid #000; /* Box around the buttons */
              border-radius: 15px; /* Rounded corners to match button style */
+             transition: background-color 0.3s ease;
          }
  
          /* Customize navbar brand (logo/link) */
@@ -69,6 +70,7 @@
              padding: 10px;
              border-radius: 15px;
              margin: 5px;
+             transition: background-color 0.3s ease;
          }
  
          .navbar-brand img {
@@ -91,8 +93,9 @@
  
          /* Change color on hover */
          .navbar-nav .nav-link:hover {
-             color: yellow !important;
-             text-decoration: underline;
+             background-color: #C0C0C0;
+             
+             
          }
  
          /* Customize navbar toggle button (hamburger) */
@@ -117,7 +120,7 @@
 
         /* Apply hover effect to all buttons */
         .btn:hover {
-            background-color: #45a049;  /* Darker green on hover */
+            background-color: #C0C0C0; 
         }
 
         /* Apply focus styles for accessibility */
@@ -128,7 +131,7 @@
 
         /* Apply active (clicked) state */
         .btn:active {
-            background-color: #3e8e41;  /* Darker green when clicked */
+            background-color: #C0C0C0;  /* Darker green when clicked */
         }
  
      </style>
@@ -153,8 +156,8 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'BinThere:bin_list' %}">BinList</a></li>
                     {% if user.is_authenticated %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'BinThere:add_bin' %}">Add Bin</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'auth_password_change' %}">Change Password</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'BinThere:profile' user.username %}">Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'auth_password_change' %}">Change Password</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'BinThere:list_profiles' %}">List Profiles</a></li>
                     {% else %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'registration_register' %}">Register Here</a></li>
@@ -162,7 +165,7 @@
                 </ul>
                 <ul class="navbar-nav ml-auto">
                     {% if user.is_authenticated %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'auth_logout' %}?next=/BinThere">Logout</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'auth_logout' %}?next=/BinThere">Sign Out</a></li>
                     {% else %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'auth_login' %}">Sign In</a></li>
                     {% endif %}
