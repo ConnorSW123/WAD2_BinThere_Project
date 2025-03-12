@@ -1,0 +1,134 @@
+{% extends "BinThere/base.html" %}
+
+{% block title %}Add Bin{% endblock %}
+
+{% block body_block %}
+    <div class="jumbotron p-4 bg-light text-dark">
+        <div class="container">
+            <h1 class="jumbotron-heading">Add a Bin To BinThere!</h1>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-10">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light text-dark">
+                        <h3 class="card-title">Bin Information</h3>
+                    </div>
+                    <div class="card-body">
+                        <form role="form" id="bin_form" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            
+                            {% for hidden in form.hidden_fields %}
+                                {{ hidden }}
+                            {% endfor %}
+                        
+                            <!-- Select an existing bin (if any) -->
+                            <div class="form-group">
+                                <label for="{{ form.existing_bin.id_for_label }}">Existing Bin (Optional):</label>
+                                {{ form.existing_bin.errors }}
+                                {{ form.existing_bin.help_text }}<br />
+                                {{ form.existing_bin }}
+                            </div>
+                        
+                            <!-- Location Name for new bin -->
+                            <div class="form-group">
+                                <label for="{{ form.location_name.id_for_label }}">Location Name:</label>
+                                {{ form.location_name.errors }}
+                                {{ form.location_name.help_text }}<br />
+                                {{ form.location_name }}
+                            </div>
+                        
+                            <!-- Bin types selection -->
+                            <div class="form-group">
+                                <label for="{{ form.bin_types.id_for_label }}">Bin Types:</label>
+                                {{ form.bin_types.errors }}
+                                {{ form.bin_types.help_text }}<br />
+                                {{ form.bin_types }}
+                            </div>
+                        
+                            <!-- Latitude and Longitude fields -->
+                            <div class="form-group">
+                                <label for="{{ form.latitude.id_for_label }}">Latitude:</label>
+                                {{ form.latitude.errors }}
+                                {{ form.latitude.help_text }}<br />
+                                {{ form.latitude }}
+                            </div>
+                        
+                            <div class="form-group">
+                                <label for="{{ form.longitude.id_for_label }}">Longitude:</label>
+                                {{ form.longitude.errors }}
+                                {{ form.longitude.help_text }}<br />
+                                {{ form.longitude }}
+                            </div>
+                        
+                            <!-- Overview field -->
+                            <div class="form-group">
+                                <label for="{{ form.overview.id_for_label }}">Overview:</label>
+                                {{ form.overview.errors }}
+                                {{ form.overview.help_text }}<br />
+                                {{ form.overview }}
+                            </div>
+                        
+                            <!-- Picture field -->
+                            <div class="form-group">
+                                <label for="{{ form.picture.id_for_label }}">Picture:</label>
+                                {{ form.picture.errors }}
+                                {{ form.picture.help_text }}<br />
+                                {{ form.picture }}
+                            </div>
+                        
+                            <div class="form-group text-center">
+                                <button class="btn btn-secondary btn-lg" type="submit" id="submit-btn">
+                                    Add Bin
+                                </button>
+                            </div>
+                        </form>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("bin_form");
+            const existingBinSelect = document.getElementById("id_existing_bin");
+            const locationFields = ["id_location_name", "id_latitude", "id_longitude"];
+            const binTypeField = document.getElementById("id_bin_types");  // Bin types field
+            const submitButton = document.getElementById("submit-btn");
+    
+            function updateFormAction() {
+                if (existingBinSelect.value) {
+                    const binPk = existingBinSelect.value; // Get the selected bin's PK
+                    form.action = "{% url 'BinThere:edit_bin' 0 %}".replace("0", binPk); // Replace 0 with binPk dynamically
+                    disableLocationFields(true);  // Disable the location fields if editing
+                } else {
+                    form.action = "{% url 'BinThere:add_bin' %}";  // Reset to add bin action
+                    disableLocationFields(false);  // Enable location fields for new bin
+                }
+            }
+    
+            // Function to disable location fields
+            function disableLocationFields(disable) {
+                locationFields.forEach(fieldId => {
+                    let field = document.getElementById(fieldId);
+                    if (field) {
+                        field.disabled = disable;
+                    }
+                });
+                // Ensure the bin_types field is not disabled, even when editing
+                if (binTypeField) {
+                    binTypeField.disabled = disable;
+                }
+            }
+    
+            existingBinSelect.addEventListener("change", updateFormAction);
+            updateFormAction(); // Ensure correct action on page load
+        });
+    </script>
+    
+    
+{% endblock %}

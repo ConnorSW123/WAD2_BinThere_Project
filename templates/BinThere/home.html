@@ -68,59 +68,28 @@
             <a href="{% url 'BinThere:bin_map' %}">
                 <button type="button" class="btn btn-primary">Bin Map</button>
             </a>
-            <a href="{% url 'BinThere:addbin' %}">
+            {% if user.is_authenticated %}
+            <a href="{% url 'BinThere:add_bin' %}">
                 <button type="button" class="btn btn-primary">Add Bin</button>
             </a>
+            {% endif %}
         </div>
 
         <!-- Right group of buttons -->
         <div class="btn-group-right">
-            <a href="{% url 'BinThere:bin_map' %}">
+            {% if user.is_authenticated %}
+
+            <a href="{% url 'auth_logout' %}?next=/BinThere"> 
                 <button type="button" class="btn btn-primary">Change Password</button>
+            {% endif %}
+
+                
             </a>
-            <a href="{% url 'BinThere:register' %}">
-                <button type="button" class="btn btn-primary">Add New Bin</button>
+            <a href="{% url 'BinThere:bin_list' %}">
+                <button type="button" class="btn btn-primary">List Of Bins</button>
             </a>
         </div>
     </div>
-</div>
 
-
-
-    <!-- 
-    <strong>{{ boldmessage }}</strong><br /> 
-    <h2>BinThere, DumpThat!</h2>
-    <p>Visits: {{ visits }}</p>
-
-    <button class="btn btn-primary" 
-            onclick="alert('You clicked the button using inline JavaScript.');"> 
-        Click me- I run on vanilla JavaScript! 
-    </button>
-    <br />
-
-    <button class="btn btn-primary" id="about-btn"> 
-        Click me- I'm using JQuery! 
-    </button>
-    <br />
-    
-    Static image of ECO logo
-    
-    <img src="{% static "images/GreenLeaf.jpg" %}" alt="Picture of An Eco logo" />
-
-    
-    <br />
-    <div id="msg">Hello! I'm a further example for JQuery testing.</div>
-
-    <div>
-
-     <img src="{{ MEDIA_URL }}RubbishInBin.jpg" alt="Picture of a Man Putting Rubbish in a Bin." /> 
-    
-    </div>
-    <div>
-    
-    
-     <img src="{{ MEDIA_URL }}RubbishInBin.jpg" alt="Picture of a Man Putting Rubbish in a Bin." /> -->
-    
-    </div>
 
 {% endblock %}

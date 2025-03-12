@@ -10,10 +10,12 @@ from django.urls import reverse, reverse_lazy
 from BinThere.forms import UserProfileForm, BinForm
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User
-from BinThere.models import UserProfile
+from BinThere.models import UserProfile, BinType
 from django.utils import timezone
 from django.views.generic.edit import CreateView
-from django.views.generic import ListView, TemplateView
+from django.views.generic import ListView, TemplateView, FormView, UpdateView
+from django.contrib import messages
+
 
 
 
@@ -63,34 +65,45 @@ def visitor_cookie_handler(request):
 
 
 
+
+
 class BinMapView(TemplateView):
     template_name = 'BinThere/map.html'
 
     def get_context_data(self, **kwargs):
-        # Get the context data from the parent class
         context = super().get_context_data(**kwargs)
-        
-        # Query all bins
+
+        # Query all bins and bin types
         bins = Bin.objects.all()
-        
-        # Format bin data to include relevant details (location, type, upvotes, downvotes)
+        bin_types = BinType.objects.all()
+
+        # Serialize the bin data into JSON format to pass it to the template
         bin_data = [
-            {'latitude': float(bin.location.latitude),  # Ensure it is a float for JavaScript
-             'longitude': float(bin.location.longitude),  # Ensure it is a float for JavaScript
-             'name': bin.bin_type.name,
-             'location_name': bin.location.name,
-             'upvotes': bin.upvotes,
-             'downvotes': bin.downvotes}
+            {
+                'id': bin.id,
+                'latitude': float(bin.location.latitude),
+                'longitude': float(bin.location.longitude),
+                'bin_types': [bin_type.name for bin_type in bin.bin_types.all()],
+                'location_name': bin.location.name,
+                'upvotes': bin.upvotes,
+                'downvotes': bin.downvotes
+            }
             for bin in bins
         ]
-        
-        # Serialize the bin data into JSON format to pass it to the template
-        bin_data_json = json.dumps(bin_data)
-        
-        # Add the bin data to the context
-        context['bin_data'] = bin_data_json
-        
+
+        # Convert bin types to a list of dictionaries for safe JSON passing
+        bin_types_data = [{'id': bin_type.id, 'name': bin_type.name} for bin_type in bin_types]
+
+        context['bin_data'] = json.dumps(bin_data)
+        context['bin_types'] = json.dumps(bin_types_data)  # Passing bin types as JSON
+
         return context
+
+
+
+
+
+
 
 
 
@@ -244,48 +257,68 @@ class ListProfilesView(View):
     
 
 @method_decorator(login_required, name='dispatch')  # Ensures the user is logged in before accessing the view
-class AddBinView(CreateView):
+class BinCreateView(CreateView):
     model = Bin
     form_class = BinForm
-    template_name = 'BinThere/addbin.html'
-
-    def get_initial(self):
-        initial = super().get_initial()
-        return initial
+    template_name = 'BinThere/add_bin.html'
+    success_url = reverse_lazy('BinThere:bin_map')
 
     def form_valid(self, form):
-        # Get the logged-in user
-        user = self.request.user
-        bin_instance = form.save(commit=False)
-        bin_instance.added_by = user  # Set the user who added the bin
+        # Check if an existing bin is selected
+        existing_bin = form.cleaned_data.get('existing_bin')
+        if existing_bin:
+            messages.error(self.request, "You selected an existing bin. Please use the update feature instead.")
+            return redirect('BinThere:bin_map')
 
-        # Check if a new location is being created
-        location = form.cleaned_data['location']
+        # Create or get location
+        location_name = form.cleaned_data['location_name']
         latitude = form.cleaned_data['latitude']
         longitude = form.cleaned_data['longitude']
-        location_name = form.cleaned_data['location_name']
 
-        if not location:  # If no location is selected, create a new location
-            if latitude and longitude and location_name:
-                # Create a new Location
-                location = Location.objects.create(
-                    name=location_name,
-                    latitude=latitude,
-                    longitude=longitude
-                )
-            else:
-                # If the location is not provided correctly, we can't create the bin
-                form.add_error('location', 'You must either select an existing location or provide a name, latitude, and longitude to create a new location.')
-                return self.form_invalid(form)
+        location, created = Location.objects.get_or_create(
+            name=location_name,
+            defaults={'latitude': latitude, 'longitude': longitude}
+        )
 
-        bin_instance.location = location  # Associate the bin with the location
-        bin_instance.save()  # Save the bin instance
-        return redirect(reverse_lazy('BinThere:bin_map'))  # Redirect to the bin map after adding the bin
+        # Create the Bin instance (but don't save it yet)
+        bin_instance = form.save(commit=False)
+        bin_instance.location = location
+        bin_instance.added_by = self.request.user
+        bin_instance.save()
 
-    def form_invalid(self, form):
-        # You can log the form errors here if needed
-        print(form.errors)
-        return self.render_to_response({'form': form})
+        # Assign bin types to the bin instance
+        bin_types = form.cleaned_data['bin_types']  # Getting the bin_types from the form
+        bin_instance.bin_types.set(bin_types)  # Set the many-to-many relationship
+        bin_instance.save()
+
+        messages.success(self.request, "New bin created successfully.")
+        return redirect('BinThere:bin_map')
+
+
+
+
+@method_decorator(login_required, name='dispatch')
+class BinUpdateView(UpdateView):
+    model = Bin
+    form_class = BinForm
+    template_name = 'BinThere/add_bin.html'
+    success_url = reverse_lazy('BinThere:bin_list')
+
+    def form_valid(self, form):
+        existing_bin = form.cleaned_data.get('existing_bin')
+        if not existing_bin:
+            messages.error(self.request, "No existing bin was selected for an update.")
+            return redirect('BinThere:bin_map')
+
+        # Add selected bin types to the existing bin
+        existing_bin.bin_types.add(*form.cleaned_data['bin_types'])
+        existing_bin.save()
+
+        messages.success(self.request, "Bin updated successfully.")
+        return redirect('BinThere:bin_map')
+
+
+
 
 
 
@@ -298,3 +331,21 @@ class BinListView(ListView):
     def get_queryset(self):
         # Ensure consistent ordering for pagination
         return Bin.objects.all().order_by('created_at') 
+
+
+
+
+
+class AddBinTypeView(FormView):
+    template_name = 'BinThere/add_bin_type.html'
+    form_class = BinForm
+    success_url = '/BinThere/BinMap/'  # Redirect to the map page after successful form submission
+
+    def form_valid(self, form):
+        # Save the bin form (either create new or update existing bin)
+        form.save()
+        return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        # Handle invalid form submission
+        return self.render_to_response(self.get_context_data(form=form))
