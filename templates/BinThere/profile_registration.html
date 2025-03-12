@@ -15,7 +15,7 @@
     <div class="container">
         <div class="row">
             <form method="post"
-                  action="{% url 'BinThere:register_profile' %}"
+                  action="{% url 'BinThere:register' %}"
                   enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form.as_p }}

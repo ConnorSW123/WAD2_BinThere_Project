@@ -23,14 +23,17 @@ class Location(models.Model):
     """Represents a unique location where bins are placed."""
     NAME_MAX_LENGTH = 100
     name = models.CharField(max_length=NAME_MAX_LENGTH, unique=True)  # Ensure unique names
-    latitude = models.DecimalField(max_digits=9, decimal_places=6)  # Store latitude as a decimal (up to 6 decimal places)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6)  # Store longitude as a decimal (up to 6 decimal places)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, default=0.0)  # Store latitude as a decimal (up to 6 decimal places)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, default=0.0) # Store longitude as a decimal (up to 6 decimal places)
     slug = models.SlugField(unique=True, blank=True)  # Slug field for URL-friendly names
 
     def save(self, *args, **kwargs):
         """Generate a slug before saving."""
         self.slug = slugify(self.name)
         super(Location, self).save(*args, **kwargs)
+
+    class Meta:
+        verbose_name_plural = 'locations'
 
     def __str__(self):
         return self.name
@@ -41,30 +44,43 @@ class BinType(models.Model):
     WASTE_CHOICES = [
         ('PET Bottle', 'PET Bottle'),
         ('Glass', 'Glass'),
-        ('Soft Plastic', 'Soft Plastic'),
+        ('Plastic', 'Plastic'),
         ('Paper', 'Paper'),
         ('Metal', 'Metal'),
+        ('General', 'General'),
+        ('Organic', 'Organic'),
     ]
     name = models.CharField(max_length=50, choices=WASTE_CHOICES, unique=True)
+
+    class Meta:
+        verbose_name_plural = 'bin_types'
 
     def __str__(self):
         return self.name
 
 
-# Represents a recycling bin at a specific location
+
+
 class Bin(models.Model):
     location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name="bins")
-    bin_type = models.ForeignKey(BinType, on_delete=models.CASCADE, related_name="bins")
+    bin_types = models.ManyToManyField(BinType, related_name="bins")  # Allow multiple bin types
     added_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    upvotes = models.IntegerField(default=0)  # Upvotes
-    downvotes = models.IntegerField(default=0)  # Downvotes
+    upvotes = models.IntegerField(default=0)
+    downvotes = models.IntegerField(default=0)
+    
+
+    # Additional fields
+    overview = models.TextField(default="No overview provided")
+    picture = models.ImageField(upload_to='bin_pictures/', null=True, blank=True)
 
     class Meta:
         verbose_name_plural = 'bins'
 
     def __str__(self):
-        return f"{self.bin_type.name} Bin at {self.location.name}"
+        return f"{', '.join([bin_type.name for bin_type in self.bin_types.all()])} Bin at {self.location.name}"
+
+
 
 
 # Allows users to upvote or downvote a bin

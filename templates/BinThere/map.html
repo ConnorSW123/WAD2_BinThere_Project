@@ -1,7 +1,4 @@
-
 <!DOCTYPE html>
-<!-- Map.html cannot currently extend base.html due to CSS conflictions causing the map to not appear or appear distorted -->
-<!-- This needs to be addressed in final presentation and is not an error-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -71,7 +68,7 @@
                     </li>
                     {% if user.is_authenticated %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'auth_logout' %}?next=/BinThere">Logout</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'BinThere:addbin' %}">Add Bin</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'BinThere:add_bin' %}">Add Bin</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'auth_password_change' %}">Change Password</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'BinThere:profile' user.username %}">Profile</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'BinThere:list_profiles' %}">List Profiles</a></li>
@@ -87,6 +84,8 @@
     <!-- Map Container -->
     <h1>Recycling Bin Locations</h1>
     <div id="map"></div>
+
+   
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
@@ -108,54 +107,30 @@
         // Function to add markers and associate upvote/downvote functionality
         function addBinMarkers(binData) {
             binData.forEach(function(bin) {
-            var marker = L.marker([bin.latitude, bin.longitude]).addTo(map);
-        
-            // Create a HTML content for the popup
-            var popupContent = `
-            <div>
-                <h5>${bin.name} At ${bin.location_name}</h5>
-        
-                <button onclick="vote(${bin.id}, 1)">Upvote (${bin.upvotes})</button>
-                <button onclick="vote(${bin.id}, -1)">Downvote (${bin.downvotes})</button>
-            </div>
-            `;
+                var marker = L.marker([bin.latitude, bin.longitude]).addTo(map);
 
-        
-            // Bind the popup to the marker
-            marker.bindPopup(popupContent);
-        });
+                // Create a HTML content for the popup
+                var binTypes = bin.bin_types.join(', ');  // Join the bin types into a single string
+                var popupContent = `
+                    <div>
+                        <h5>${bin.location_name}</h5>
+                        <p><strong>Bin Types:</strong> ${binTypes}</p>  <!-- Display multiple bin types -->
+
+                        <!-- Upvote and Downvote buttons -->
+                        <button onclick="vote(${bin.id}, 1)">Upvote (${bin.upvotes})</button>
+                        <button onclick="vote(${bin.id}, -1)">Downvote (${bin.downvotes})</button>
+                        
+                    </div>
+                `;
+
+                // Bind the popup to the marker
+                marker.bindPopup(popupContent);
+            });
         }
 
-        // Function to handle the voting (either upvote or downvote)
-        function vote(binId, voteType) {
-        // Make an AJAX request to update the vote
-        $.ajax({
-            url: `/BinThere/vote/${binId}/${voteType}/`,  // Django URL pattern for voting
-            type: 'POST',
-            data: {
-                'csrfmiddlewaretoken': '{{ csrf_token }}',  // CSRF token for protection
-            },
-            success: function(response) {
-                // Update the vote counts on the popup dynamically
-                $('#upvotes-' + binId).text(response.upvotes);
-                $('#downvotes-' + binId).text(response.downvotes);
-            },
-            error: function(xhr, errmsg, err) {
-                alert('An error occurred while voting.');
-            }
-        });
-    }
-    
-    // Add the markers to the map
+       
+        // Add the markers to the map
         addBinMarkers(binData);
-
     </script>
 </body>
 </html>
-
-
-
-
-
-
-

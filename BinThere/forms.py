@@ -5,56 +5,81 @@ from BinThere.models import UserProfile
 
 
 
-class BinForm(forms.ModelForm):
-    # Fields for adding a new bin
-    location = forms.ModelChoiceField(
-        queryset=Location.objects.all(),
-        required=False,  # This will allow the user to leave this field blank if they want to add a new location
-        help_text="Select the location for the bin, or leave it blank to create a new location."
-    )
 
-    location_name = forms.CharField(
-        max_length=100, required=False,  # Only required if a new location is being created
-        help_text="Enter the name for the new location."
+
+class BinForm(forms.ModelForm):
+    existing_bin = forms.ModelChoiceField(
+        queryset=Bin.objects.all(),
+        required=False,  # Allows creating a new bin if left blank
+        help_text="Select an existing bin to add bin types, or leave blank to create a new bin."
     )
     
-    # 6 checkboxes for features
-    General = forms.BooleanField(required=False, label='General')
-    Plastic = forms.BooleanField(required=False, label='Plastic')
-    Paper = forms.BooleanField(required=False, label='Paper')
-    Glass = forms.BooleanField(required=False, label='Glass')
-    Metal = forms.BooleanField(required=False, label='Metal')
-    Organic = forms.BooleanField(required=False, label='Organic')
-    
+    location_name = forms.CharField(
+        max_length=100, required=False, help_text="Enter the name for the new location."
+    )
     latitude = forms.DecimalField(
-        max_digits=9, decimal_places=6, required=False,  # Will be used only if a new location is created
-        help_text="Enter the latitude of the new location."
+        max_digits=9, decimal_places=6, required=False, help_text="Enter the latitude."
     )
     longitude = forms.DecimalField(
-        max_digits=9, decimal_places=6, required=False,  # Will be used only if a new location is created
-        help_text="Enter the longitude of the new location."
+        max_digits=9, decimal_places=6, required=False, help_text="Enter the longitude."
+    )
+    
+    bin_types = forms.ModelMultipleChoiceField(
+        queryset=BinType.objects.all(),
+        required=True,
+        widget=forms.CheckboxSelectMultiple,
+        help_text="Select bin types"
     )
 
-    # Overview text field
+    
     overview = forms.CharField(
         widget=forms.Textarea(attrs={'rows': 4}),
-        required=True,
+        required=False,
         help_text="Enter a brief overview of the bin."
     )
-
-    # Image upload field
+    
     picture = forms.ImageField(required=False)
-
-    upvotes = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
-    downvotes = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
-
+    
     class Meta:
         model = Bin
-        fields = ('location', 'bin_type', 'latitude', 'longitude', 'location_name', 'upvotes', 'downvotes')  # added location_name
+        fields = (
+            'existing_bin', 'location_name', 'latitude', 'longitude', 'bin_types', 'picture'
+        )
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # No need to set added_by field in the form itself
+    def clean(self):
+        """
+        Ensure that either an existing bin is selected OR a new bin's location data is provided.
+        """
+        cleaned_data = super().clean()
+        existing_bin = cleaned_data.get("existing_bin")
+        location_name = cleaned_data.get("location_name")
+        latitude = cleaned_data.get("latitude")
+        longitude = cleaned_data.get("longitude")
+
+        if existing_bin and (location_name or latitude or longitude):
+            raise forms.ValidationError(
+                "You cannot select an existing bin and provide a new location at the same time."
+            )
+
+        if not existing_bin and (not location_name or latitude is None or longitude is None):
+            raise forms.ValidationError(
+                "To create a new bin, you must provide a location name, latitude, and longitude."
+            )
+
+        return cleaned_data
+
+
+
+
+
+
+
+
+class BinTypeForm(forms.Form):
+    bin_type = forms.ModelChoiceField(queryset=BinType.objects.all(), empty_label="Select a Bin Type")
+
+
+
 
 
 
