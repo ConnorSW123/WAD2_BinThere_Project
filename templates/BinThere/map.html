@@ -1,3 +1,4 @@
+{% load static %} 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -120,10 +121,22 @@
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
+        // Customise the drpo-pins on the map
+        var greenBinIcon = L.icon({
+            iconUrl: "{% static 'Images/green_bin.png' %}",
+
+            iconSize:     [50, 50],
+            iconAnchor:   [25, 50],
+            popupAnchor:  [0, -50]
+        });
+
+        // L.marker([51.5, -0.09], {icon: greenBinIcon}).addTo(map);
+
+
         // Function to add markers and associate upvote/downvote functionality
         function addBinMarkers(binData) {
             binData.forEach(function(bin) {
-                var marker = L.marker([bin.latitude, bin.longitude]).addTo(map);
+                var marker = L.marker([bin.latitude, bin.longitude],{icon: greenBinIcon}).addTo(map);
 
                 // Create HTML content for the popup
                 var binTypes = bin.bin_types.join(', ');  // Join the bin types into a single string
