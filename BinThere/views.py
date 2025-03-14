@@ -103,10 +103,10 @@ class VoteView(View):
         except Bin.DoesNotExist:
             return JsonResponse({'error': 'Bin not found'}, status=404)
 
-        # Handle upvotes and downvotes based on vote_type (1 for upvote, -1 for downvote)
+        # Handle upvotes and downvotes based on vote_type (1 for upvote, 0 for downvote)
         if vote_type == 1:
             bin.upvotes += 1
-        elif vote_type == -1:
+        elif vote_type == 0:
             bin.downvotes += 1
         else:
             return JsonResponse({'error': 'Invalid vote type'}, status=400)

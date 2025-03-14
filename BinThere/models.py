@@ -85,7 +85,7 @@ class Bin(models.Model):
 class Vote(models.Model):
     bin = models.ForeignKey(Bin, on_delete=models.CASCADE, related_name='votes')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    vote = models.SmallIntegerField(choices=[(1, 'Upvote'), (-1, 'Downvote')])
+    vote = models.SmallIntegerField(choices=[(1, 'Upvote'), (0, 'Downvote')])
 
     class Meta:
         unique_together = ('bin', 'user')  # Prevents duplicate votes by the same user

@@ -103,9 +103,9 @@
     <h1>Recycling Bin Locations</h1>
     <div id="map"></div>
 
-    <script defer src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script defer>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script  src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
         // Parse bin data passed from Django into a JavaScript object
         var binData = JSON.parse('{{ bin_data|escapejs }}');  // Ensures the data is safely passed as JSON
         console.log(binData); // Check the console to see if binData is correct
@@ -146,8 +146,8 @@
                         <p><strong>Bin Types:</strong> ${binTypes}</p>  <!-- Display multiple bin types -->
                         
                         <div class="vote-buttons">
-                            <button id="upvote-button-${bin.id}" onclick="() => vote(${bin.id}, 1)">Upvote (${bin.upvotes})</button>
-                            <button id="downvote-button-${bin.id}" onclick="() => vote(${bin.id}, -1)">Downvote (${bin.downvotes})</button>
+                            <button id="upvote-button-${bin.id}" onclick="vote(${bin.id}, 1)">Upvote (${bin.upvotes})</button>
+                            <button id="downvote-button-${bin.id}" onclick="vote(${bin.id}, 0)">Downvote (${bin.downvotes})</button>
                         </div>
                     </div>
                 `;
@@ -165,15 +165,14 @@
             console.log("Sending request to:", url);  // For debugging
 
             fetch(url, {
-                method: 'GET',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCookie('csrftoken')  // Include CSRF token
                 }
             })
-            .then(async response => {
+            .then(response => {
                 if (response.ok) {
-                    console.log(await response.text())
                     return response.json();  // Parse JSON response
                 } else {
                     throw new Error('An error occurred while voting. Please try again.');
