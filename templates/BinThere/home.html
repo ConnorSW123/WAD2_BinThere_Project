@@ -42,18 +42,75 @@
         border: 2px solid #000; /* Box around the buttons */
         border-radius: 15px;  /* Rounded corners */
         background-color: #EBEBEB;  /* Button-like background */
+        flex-wrap: wrap;  /* Allow buttons to wrap on smaller screens */
     }
 
     /* Left side button group */
     .btn-group-left {
         display: flex;
         gap: 10px;  /* Space between buttons */
+        flex-wrap: wrap; /* Allow buttons to wrap if needed */
     }
 
     /* Right side button group */
     .btn-group-right {
         display: flex;
         gap: 10px;  /* Space between buttons */
+        flex-wrap: wrap; /* Allow buttons to wrap if needed */
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .button-wrapper {
+            flex-direction: column;
+            align-items: center; /* Center align buttons vertically */
+            width: 100%; /* Full width on smaller screens */
+        }
+
+        .btn-group-left, .btn-group-right {
+            justify-content: center; /* Center buttons within the container */
+        }
+
+        .btn {
+            width: 100%; /* Make buttons full-width on small screens */
+            max-width: 300px; /* Limit button width */
+        }
+    }
+
+    /* Hover effect to match the navbar buttons */
+    .btn:hover {
+        background-color: #C0C0C0 !important;
+
+    }
+
+    /* Active (clicked) state to match the navbar buttons */
+    .btn:active {
+        background-color: #C0C0C0 !important;
+        box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.2) !important; /* Add a slight pressed effect */
+        border-color: black !important
+        
+    }
+
+    /* Focus state for consistency with the navbar buttons */
+    .btn:focus {
+        outline: none !important;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2) !important;
+        border-color: black !important
+    }
+
+    .btn:focus, 
+    .btn:active, 
+    .btn:hover {
+        outline: none !important;
+        box-shadow: none !important;
+        border-color: black !important; /* Ensure border color remains consistent */
+    }
+
+    .btn,
+    .btn:hover,
+    .btn:focus,
+    .btn:active {
+        color: black !important;  /* Set text color to black */
     }
 
 </style>
