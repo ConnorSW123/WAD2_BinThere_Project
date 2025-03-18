@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from datetime import datetime;
 from django.views import View
-from .models import Location, Bin
+from .models import Location, Bin, Vote
 import json
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
@@ -18,6 +18,9 @@ from django.contrib.auth import login
 from geopy.distance import geodesic
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import Http404
+from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
+
 
 
 # Create your views here.
@@ -96,23 +99,66 @@ class BinMapView(TemplateView):
 
         return context
 
-class VoteView(View):
+
+
+
+@method_decorator(csrf_exempt, name='dispatch')  # Remove this if CSRF handling is managed elsewhere
+class VoteView(LoginRequiredMixin, View):
     def post(self, request, bin_id, vote_type):
-        try:
-            bin = Bin.objects.get(id=bin_id)
-        except Bin.DoesNotExist:
-            return JsonResponse({'error': 'Bin not found'}, status=404)
+        # Fetch the bin object based on bin_id
+        bin_obj = get_object_or_404(Bin, id=bin_id)
 
-        # Handle upvotes and downvotes based on vote_type (1 for upvote, 0 for downvote)
-        if vote_type == 1:
-            bin.upvotes += 1
-        elif vote_type == 0:
-            bin.downvotes += 1
+        # Ensure vote_type is valid (1 for upvote, 0 for downvote)
+        if vote_type not in [0, 1]:
+            return JsonResponse({"error": "Invalid vote type."}, status=400)
+
+        # Check if the user has already voted
+        existing_vote = Vote.objects.filter(user=request.user, bin=bin_obj).first()
+
+        if existing_vote:
+            if existing_vote.vote == vote_type:
+                # Remove vote if the user clicks the same vote again (toggle behavior)
+                existing_vote.delete()
+                # Update the vote count in the bin
+                if vote_type == 1:
+                    bin_obj.upvotes -= 1
+                else:
+                    bin_obj.downvotes -= 1
+            else:
+                # Update vote type if user changes their vote
+                if existing_vote.vote == 1:
+                    bin_obj.upvotes -= 1
+                else:
+                    bin_obj.downvotes -= 1
+
+                existing_vote.vote = vote_type
+                existing_vote.save()
+
+                # Update the vote count in the bin
+                if vote_type == 1:
+                    bin_obj.upvotes += 1
+                else:
+                    bin_obj.downvotes += 1
         else:
-            return JsonResponse({'error': 'Invalid vote type'}, status=400)
+            # Create new vote if the user hasn't voted before
+            Vote.objects.create(user=request.user, bin=bin_obj, vote=vote_type)
 
-        bin.save()  # Save the updated bin with the new vote count
-        return JsonResponse({'upvotes': bin.upvotes, 'downvotes': bin.downvotes})
+            # Update the vote count in the bin
+            if vote_type == 1:
+                bin_obj.upvotes += 1
+            else:
+                bin_obj.downvotes += 1
+
+        # Save the bin object after updating the counts
+        bin_obj.save()
+
+        # Get updated vote counts
+        upvotes = bin_obj.upvotes
+        downvotes = bin_obj.downvotes
+
+        return JsonResponse({"message": "Vote recorded.", "upvotes": upvotes, "downvotes": downvotes})
+
+
 
 class RegisterProfileView(View):
     def get(self, request):
@@ -357,9 +403,6 @@ class BinListView(ListView):
         context = super().get_context_data(**kwargs)
         context['bin_types'] = BinType.objects.all()
         return context
-
-
-
 
 
 

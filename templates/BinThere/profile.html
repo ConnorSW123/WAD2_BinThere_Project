@@ -11,7 +11,7 @@
         <div class="col-md-8">
             <h1 class="text-center mb-4">{{ selected_user.username }}'s Profile</h1>
             <div class="text-center">
-                <img src="{% if user_profile.picture %}{{ user_profile.picture.url }}{% else %}https://loremflickr.com/128/128/people{% endif %}" 
+                <img src="{% if user_profile.picture %}{{ user_profile.picture.url }}{% else %}{% static  'Images/default_profile_picture.jpg' %}{% endif %}" 
                      alt="{{ selected_user.username }}'s profile image"
                      class="rounded-circle" 
                      width="128" 

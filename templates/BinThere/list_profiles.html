@@ -20,7 +20,7 @@
             {% for list_user in user_profile_list %}
                 <div class="list-group-item d-flex align-items-center">
                     <!-- Profile Image -->
-                    <img src="{% if list_user.picture %}{{ list_user.picture.url }}{% else %}https://loremflickr.com/64/64/people{% endif %}" 
+                    <img src="{% if list_user.picture %}{{ list_user.picture.url }}{% else %}{% static  'Images/default_profile_picture.jpg' %}{% endif %}"  
                          alt="Profile Picture" 
                          class="rounded-circle" 
                          width="64" 
