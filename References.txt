@@ -19,6 +19,8 @@ External Packages
 leaflet Javascript Package - https://leafletjs.com/index.html
         Javascript - https://unpkg.com/leaflet/dist/leaflet.js
         CSS - https://unpkg.com/leaflet/dist/leaflet.css
+        Coverage - Added Through pip install - https://coverage.readthedocs.io/en/7.7.0/
+        Geopy - Added Through Pip install - https://geopy.readthedocs.io/en/stable/
         
 
 

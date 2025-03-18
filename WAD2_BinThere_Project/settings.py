@@ -36,9 +36,7 @@ SECRET_KEY = 'lvnh*)sjrilx$^5v(ee-j3+ucdnvbzs5i%0e%c(hz^2ewh&a4f'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# CHAPTER 19 ADDITION
-#TO DO: Change this to the username of the PythonAnywhere Account we plan on hosting our WebApp.
-# First Item is a PythonAnywhere Hosting URL - Using Connor's as default/placeholder at the moment.
+# First Item is a PythonAnywhere Hosting URL - Using Connor's as default at the moment.
 # Second Item is device port for hosting webapp locally - Do not remove or Webapp will not host locally.
 
 ALLOWED_HOSTS = ['ConnorSweeney.pythonanywhere.com', '127.0.0.1']
@@ -167,7 +165,6 @@ LOGOUT_REDIRECT_URL = '/BinThere/'
 
 
 # The page users are directed to if they are not logged in. 
-# # This was set in a previous chapter. 
 # The registration package uses this, too. 
 LOGIN_URL = 'auth_login'
 

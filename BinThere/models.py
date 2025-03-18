@@ -27,6 +27,7 @@ class Location(models.Model):
     longitude = models.DecimalField(max_digits=9, decimal_places=6, default=0.0) # Store longitude as a decimal (up to 6 decimal places)
     slug = models.SlugField(unique=True, blank=True)  # Slug field for URL-friendly names
 
+    # Slug Handling
     def save(self, *args, **kwargs):
         """Generate a slug before saving."""
         self.slug = slugify(self.name)
@@ -59,6 +60,7 @@ class BinType(models.Model):
         return self.name
 
 
+# Allows for creation, manipulation and storage of Bin objects.
 class Bin(models.Model):
     location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name="bins")
     bin_types = models.ManyToManyField(BinType, related_name="bins")  # Allow multiple bin types

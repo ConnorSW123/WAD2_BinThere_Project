@@ -9,6 +9,7 @@ class CategoryAdmin(admin.ModelAdmin):
     # Update the registration to include this customised interface
     prepopulated_fields = {'slug':('name',)}
 
+# Adminstrative Site Registration for Each Model
 admin.site.register(Location)
 admin.site.register(BinType)
 admin.site.register(Bin)

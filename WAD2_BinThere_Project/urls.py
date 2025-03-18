@@ -43,5 +43,6 @@ urlpatterns = [
     # New line below -- don't forget the slash after register!
     path('accounts/register/', MyRegistrationView.as_view(), name='registration_register'),
 
+    # Include media urls connector to ensure all media urls are properly formatted.
     path('accounts/', include('registration.backends.simple.urls')),
 ] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

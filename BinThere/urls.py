@@ -2,7 +2,7 @@ from django.urls import path
 
 app_name = 'BinThere'
 
-#CHAPTER 14/15 ADDITIONS - Adding Classes structure to Views
+# Adding Classes structure to Views
 from BinThere.views import HomeView, RegisterProfileView, ProfileView, ListProfilesView, BinCreateView, BinUpdateView, BinListView, BinMapView, VoteView,DeleteBinView
 
 

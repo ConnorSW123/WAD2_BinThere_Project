@@ -46,6 +46,7 @@ class BinForm(forms.ModelForm):
             'existing_bin', 'location_name', 'latitude', 'longitude', 'bin_types', 'overview', 'picture', 'upvotes', 'downvotes',
         )
 
+    # Clean function used to retrieve and properly format inputted form information.
     def clean(self):
         cleaned_data = super().clean()
         existing_bin = cleaned_data.get("existing_bin")
@@ -53,6 +54,7 @@ class BinForm(forms.ModelForm):
         latitude = cleaned_data.get("latitude")
         longitude = cleaned_data.get("longitude")
 
+        # Form Validation
         if existing_bin and (location_name or latitude or longitude):
             raise forms.ValidationError(
                 "You cannot select an existing bin and provide a new location at the same time."
@@ -65,12 +67,12 @@ class BinForm(forms.ModelForm):
 
         return cleaned_data
 
-
+# BinType Form used to allocate bintypes to both newly created and pre-existing bins.
 class BinTypeForm(forms.Form):
     bin_type = forms.ModelChoiceField(queryset=BinType.objects.all(), empty_label="Select a Bin Type")
 
 
-
+# BinSearch Form with optional search requirements to allow for flexible user searching via precise location or BinType.
 class BinSearchForm(forms.Form):
     bin_type = forms.ModelChoiceField(queryset=BinType.objects.all(), required=False, label="Bin Type")
     latitude = forms.FloatField(required=False, label="Latitude")  # Optional latitude for location-based search
