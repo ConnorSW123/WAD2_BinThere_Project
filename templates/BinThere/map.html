@@ -72,6 +72,7 @@
             background-color: #f0f0f0;
             border: 1px solid #ccc;
             cursor: pointer;
+            font-family: 'Yomogi', sans-serif;
         }
 
         .vote-buttons button:hover {
@@ -134,8 +135,6 @@
             popupAnchor:  [0, -25]
         });
 
-        // L.marker([51.5, -0.09], {icon: greenBinIcon}).addTo(map);
-
 
         // Function to add markers and associate upvote/downvote functionality
         function addBinMarkers(binData) {
@@ -145,7 +144,7 @@
                 // Create HTML content for the popup
                 var binTypes = bin.bin_types.join(', ');  // Join the bin types into a single string
                 var popupContent = `
-                    <div>
+                    <div style="font-family: 'Yomogi', sans-serif;">
                         <h5>${bin.location_name}</h5>
                         <p><strong>Bin Types:</strong> ${binTypes}</p>  <!-- Display multiple bin types -->
                         
