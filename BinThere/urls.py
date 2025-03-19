@@ -3,7 +3,7 @@ from django.urls import path
 app_name = 'BinThere'
 
 # Adding Classes structure to Views
-from BinThere.views import HomeView, RegisterProfileView, ProfileView, ListProfilesView, BinCreateView, BinUpdateView, BinListView, BinMapView, VoteView,DeleteBinView
+from BinThere.views import HomeView, HowToUseView, RegisterProfileView, ProfileView, ListProfilesView, BinCreateView, BinUpdateView, BinListView, BinMapView, VoteView,DeleteBinView
 
 
 
@@ -18,8 +18,8 @@ urlpatterns = [
     path('BinMap/BinList', BinListView.as_view(), name='bin_list'),
     path('accounts/register/', RegisterProfileView.as_view(), name='register'),
     path('profile/<str:username>/', ProfileView.as_view(), name='profile'),
-
     path('profiles/', ListProfilesView.as_view(), name='list_profiles'),
+    path('how_to_use/', HowToUseView.as_view(), name='how_to_use')
 
     
 

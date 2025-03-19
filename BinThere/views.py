@@ -449,4 +449,7 @@ class DeleteBinView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         messages.success(self.request, "Bin deleted successfully!")
         return super().delete(request, *args, **kwargs)
 
-    
+class HowToUseView(View):
+    def get(self, request):
+        context_dict = {}
+        return render(request,'BinThere/how_to_use.html', context_dict)

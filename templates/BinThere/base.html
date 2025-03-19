@@ -160,6 +160,7 @@
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item"><a class="nav-link" href="{% url 'BinThere:bin_map' %}">Bin Map</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'BinThere:bin_list' %}">BinList</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'BinThere:how_to_use' %}">How to use</a></li>
                     {% if user.is_authenticated %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'BinThere:add_bin' %}">Add Bin</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'auth_password_change' %}">Change Password</a></li>
