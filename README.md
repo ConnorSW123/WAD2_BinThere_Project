@@ -60,6 +60,8 @@
 
 ✨ **Default Profile Picture added to all entries to enhance readability and presentation.**
 
+❓ **Users can access a user guide.**
+
 ---
 
 ## **References and Additional Packages**
