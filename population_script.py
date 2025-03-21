@@ -45,34 +45,39 @@ def populate():
     print("Locations populated!")
 
     # Now create some bin types
-    pet_bin_type = BinType.objects.get_or_create(name="PET Bottle")[0]
-    glass_bin_type = BinType.objects.get_or_create(name="Glass")[0]
-    plastic_bin_type = BinType.objects.get_or_create(name="Soft Plastic")[0]
-    paper_bin_type = BinType.objects.get_or_create(name="Paper")[0]
-    metal_bin_type = BinType.objects.get_or_create(name="Metal")[0]
+    batteries_bin_type = BinType.objects.get_or_create(name="Batteries")[0]
+    cardboard_bin_type = BinType.objects.get_or_create(name="Cardboard")[0]
+    food_drink_cans_bin_type = BinType.objects.get_or_create(name="Food and Drink Cans")[0]
+    food_waste_bin_type = BinType.objects.get_or_create(name="Food Waste")[0]
     general_bin_type = BinType.objects.get_or_create(name="General")[0]
-    organic_bin_type = BinType.objects.get_or_create(name="Organic")[0]
+    metal_bin_type = BinType.objects.get_or_create(name="Metal")[0]
+    mixed_glass_bin_type = BinType.objects.get_or_create(name="Mixed Glass")[0]
+    paper_bin_type = BinType.objects.get_or_create(name="Paper")[0]
+    plastic_bottles_bin_type = BinType.objects.get_or_create(name="Plastic Bottles")[0]
+    soft_plastic_bin_type = BinType.objects.get_or_create(name="Soft Plastic")[0]
+    textiles_bin_type = BinType.objects.get_or_create(name="Textiles")[0]
+
 
     print("Bin types populated!")
 
     # Now create some bins at these locations with initial upvotes and downvotes
     bin1 = Bin.objects.get_or_create(location=loc1, added_by=user1, upvotes=5, downvotes=2)[0]
-    bin1.bin_types.set([pet_bin_type, plastic_bin_type])  # Assign multiple bin types to bin1
+    bin1.bin_types.set([plastic_bottles_bin_type, soft_plastic_bin_type])  # Assign multiple bin types to bin1
 
     bin2 = Bin.objects.get_or_create(location=loc2, added_by=user2, upvotes=3, downvotes=1)[0]
-    bin2.bin_types.set([glass_bin_type, paper_bin_type])  # Assign multiple bin types to bin2
+    bin2.bin_types.set([mixed_glass_bin_type, paper_bin_type])  # Assign multiple bin types to bin2
 
     bin3 = Bin.objects.get_or_create(location=loc3, added_by=user3, upvotes=7, downvotes=0)[0]
-    bin3.bin_types.set([plastic_bin_type])  # Assign a single bin type to bin3
+    bin3.bin_types.set([soft_plastic_bin_type])  # Assign a single bin type to bin3
 
     bin4 = Bin.objects.get_or_create(location=loc4, added_by=user1, upvotes=0, downvotes=4)[0]
-    bin4.bin_types.set([paper_bin_type, glass_bin_type])  # Assign multiple bin types to bin4
+    bin4.bin_types.set([paper_bin_type, mixed_glass_bin_type])  # Assign multiple bin types to bin4
 
     bin5 = Bin.objects.get_or_create(location=loc5, added_by=user2, upvotes=2, downvotes=3)[0]
     bin5.bin_types.set([metal_bin_type, general_bin_type])  # Assign multiple bin types to bin5
 
     bin6 = Bin.objects.get_or_create(location=loc6, added_by=user3, upvotes=3, downvotes=3)[0]
-    bin6.bin_types.set([organic_bin_type, general_bin_type])  # Assign multiple bin types to bin6
+    bin6.bin_types.set([food_waste_bin_type, general_bin_type])  # Assign multiple bin types to bin6
 
     print("Bins populated!")
 

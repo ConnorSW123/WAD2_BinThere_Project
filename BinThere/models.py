@@ -43,13 +43,17 @@ class Location(models.Model):
 # Types of waste that bins accept
 class BinType(models.Model):
     WASTE_CHOICES = [
-        ('PET Bottle', 'PET Bottle'),
-        ('Glass', 'Glass'),
-        ('Plastic', 'Plastic'),
+        ('Plastic Bottles', 'Plastic Bottles'),
+        ('Mixed Glass', 'Mixed Glass'),
+        ('Soft Plastic', 'Soft Plastic'),
         ('Paper', 'Paper'),
         ('Metal', 'Metal'),
         ('General', 'General'),
-        ('Organic', 'Organic'),
+        ('Food Waste', 'Food Waste'),
+        ('Textiles', 'Textiles'),
+        ('Food and Drink Cans', 'Food and Drink Cans'),
+        ('Cardboard', 'Cardboard'),
+        ('Batteries', 'Batteries'),
     ]
     name = models.CharField(max_length=50, choices=WASTE_CHOICES, unique=True)
 
