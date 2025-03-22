@@ -8,7 +8,7 @@
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v3.8.5">
     <link rel="icon" href="{% static 'images/favicon.ico' %}">
-    <title>BinThere - {% block title_block %}How to Use BinThere!{% endblock %}</title>
+    <title>BinThere - {% block title_block %}Help{% endblock %}</title>
     
     <!-- Bootstrap core CSS -->
     <link href="https://getbootstrap.com/docs/4.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
@@ -19,8 +19,7 @@
 
     <!-- Google Fonts Link -->
     <link href="https://fonts.googleapis.com/css2?family=Yomogi&display=swap" rel="stylesheet">
- 
-    <style>
+ <style>
  
         /*font and background*/
         body {
@@ -41,7 +40,8 @@
             min-height: 100vh; /* Make the container take up at least the full viewport height */
             display: flex;
             flex-direction: column;
-        }
+     
+       }
 
         main {
             flex: 1; /* Allow the main content to grow and fill the remaining space */
@@ -160,7 +160,7 @@
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item"><a class="nav-link" href="{% url 'BinThere:bin_map' %}">Bin Map</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'BinThere:bin_list' %}">BinList</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'BinThere:how_to_use' %}">How to use</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'BinThere:help' %}">Help</a></li>
                     {% if user.is_authenticated %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'BinThere:add_bin' %}">Add Bin</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'auth_password_change' %}">Change Password</a></li>

@@ -1,0 +1,31 @@
+details {
+    font-size: 18px;
+    margin-bottom: 12px;
+    padding: 12px;
+    border: 2px solid #c0c0c0;
+    border-radius: 8px;
+    background-color: #d5eaff;
+    transition: background-color 0.3s ease;
+}
+
+details[open] {
+    background-color: #aad4ff;
+}
+
+summary {
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 10px;
+    color: #333;
+}
+
+summary:hover {
+    color: #000;
+}
+
+details > p {
+    margin-top: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+}
