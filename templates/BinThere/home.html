@@ -9,89 +9,88 @@
 {% block body_block %}
 
 <style>
-    /* Center the container vertically and horizontally, but raise it a bit */
     .container {
         display: flex;
         flex-direction: column;
-        justify-content: flex-start;  /* Align items to the top */
+        justify-content: flex-start;
         align-items: center;
-        min-height: 90vh;  /* Reduced height to push content higher */
-        margin-top: 150px;  /* Optional: Push the content down a bit */
+        min-height: 90vh;
+        margin-top: 150px;
     }
 
     /* Style for the header */
     .jumbotron-heading {
-        margin-bottom: 30px; /* Space between header and buttons */
+        margin-bottom: 30px;
         margin-right: 75px;
         padding: 10px 20px;
         text-align: center;
-        border: 2px solid #000;  /* Border around the title */
-        text-decoration: underline; /* Underline the title */
-        background-color: #EBEBEB;  /* Button-like background */
-        color: black; /* Black text */
-        border-radius: 15px;  /* Rounded corners */
+        border: 2px solid #000;
+        text-decoration: underline;
+        background-color: #EBEBEB;
+        color: black;
+        border-radius: 15px;
     }
 
-    /* Button wrapper container to hold both left and right groups */
+    /* Button wrapper*/
     .button-wrapper {
         display: flex;
         justify-content: space-between;
-        width: 60%;  /* Full width of the screen */
-        max-width: 1000px;  /* Optional: limit max width */
-        padding: 10px 10px; /* Add horizontal padding to prevent buttons from sticking to edges */
-        border: 2px solid #000; /* Box around the buttons */
-        border-radius: 15px;  /* Rounded corners */
-        background-color: #EBEBEB;  /* Button-like background */
-        flex-wrap: wrap;  /* Allow buttons to wrap on smaller screens */
+        width: 60%;
+        max-width: 1000px;
+        padding: 10px 10px;
+        border: 2px solid #000;
+        border-radius: 15px;
+        background-color: #EBEBEB;
+        flex-wrap: wrap;
     }
 
     /* Left side button group */
     .btn-group-left {
         display: flex;
-        gap: 10px;  /* Space between buttons */
-        flex-wrap: wrap; /* Allow buttons to wrap if needed */
+        gap: 10px;
+        flex-wrap: wrap;
     }
 
     /* Right side button group */
     .btn-group-right {
         display: flex;
-        gap: 10px;  /* Space between buttons */
-        flex-wrap: wrap; /* Allow buttons to wrap if needed */
+        gap: 10px;
+        flex-wrap: wrap;
     }
 
-    /* Responsive adjustments */
+    /* small screen adjustment */
     @media (max-width: 768px) {
         .button-wrapper {
             flex-direction: column;
-            align-items: center; /* Center align buttons vertically */
-            width: 100%; /* Full width on smaller screens */
+            align-items: center;
+            width: 100%;
         }
 
         .btn-group-left, .btn-group-right {
-            justify-content: center; /* Center buttons within the container */
+            justify-content: center;
         }
 
         .btn {
-            width: 100%; /* Make buttons full-width on small screens */
-            max-width: 300px; /* Limit button width */
+            width: 100%;
+            max-width: 300px;
         }
     }
 
-    /* Hover effect to match the navbar buttons */
+    /* Hover effect */
     .btn:hover {
         background-color: #C0C0C0 !important;
 
     }
 
-    /* Active (clicked) state to match the navbar buttons */
+    /* clicked state*/
     .btn:active {
         background-color: #C0C0C0 !important;
-        box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.2) !important; /* Add a slight pressed effect */
+        box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.2) !important;
         border-color: black !important
         
     }
 
-    /* Focus state for consistency with the navbar buttons */
+    /* Focus state*/
     .btn:focus {
         outline: none !important;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.2) !important;
@@ -103,14 +102,14 @@
     .btn:hover {
         outline: none !important;
         box-shadow: none !important;
-        border-color: black !important; /* Ensure border color remains consistent */
+        border-color: black !important;
     }
 
     .btn,
     .btn:hover,
     .btn:focus,
     .btn:active {
-        color: black !important;  /* Set text color to black */
+        color: black !important;
     }
 
 </style>
