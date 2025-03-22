@@ -141,13 +141,12 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'auth_password_change' %}">Change Password</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'BinThere:profile' user.username %}">Profile</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'BinThere:list_profiles' %}">List Profiles</a></li>
-                    <!-- Removed duplicate Sign Out -->
                 {% else %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'registration_register' %}">Register Here</a></li>
                 {% endif %}
                 {% if user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'auth_logout' %}?next=/BinThere" style="padding-right: 20px;">Sign Out</a>
+                    <a class="nav-link" href="{% url 'auth_logout' %}?next={% url 'BinThere:bin_map' %}">Sign Out</a>
                 </li>
                 {% else %}
                 <li class="nav-item"><a class="nav-link" href="{% url 'auth_login' %}">Sign In</a></li>
