@@ -1,0 +1,112 @@
+/* Style for the map */
+#map {
+    height: 500px;
+}
+
+/* navbar styling*/
+#navbar-container {
+    background-color: #EBEBEB;
+    /* width: 100%; */
+    padding: 10px 20px;  /* Space above and below */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0; 
+    z-index: 1000;  /*Ensure it stays above the map*/
+    border: 2px solid #000;
+    border-radius: 15px;
+    transition: background-color 0.3s ease;
+}
+
+
+
+#navbar-container .navbar {
+    margin: 0 auto;
+    width: 100%;  /*Control the width of the navbar*/
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-nav {
+    list-style-type: none;
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin: 0;
+    
+}
+
+/* navbar home button */
+.navbar-brand {
+    font-size: 24px;
+    font-weight: bold;
+    color: #EBEBEB !important;
+    border: 2px solid #000;
+    padding: 10px;
+    border-radius: 15px;
+    margin: 0px;
+    transition: background-color 0.3s ease;
+}
+
+.navbar-brand img {
+    width: 30px;  /* Adjust the size of the home */
+    height: auto;
+}
+
+.nav-item {
+    color: black !important;
+    padding: 10px;
+    font-size: 18px;
+    background-color: #EBEBEB;
+    border-radius: 15px;
+    margin: 5px;
+    text-decoration: none;
+    border: 2px solid #000;
+    transition: background-color 0.3s ease;
+}
+
+.nav-item:hover{
+    background-color: #C0C0C0;
+}
+
+.nav-link {
+    color: #333;
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    color: #000;
+}
+
+/* Ensuring the map starts below the navbar */
+body {
+    font-family: 'Yomogi', sans-serif;
+    padding-top: 70px;  /* Ensure the map doesn't overlap with the navbar */
+    background-image: url('/static/images/Background.png'); /* Direct path to static folder */
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    top:0;
+}
+
+.vote-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.vote-buttons button {
+    margin: 5px;
+    padding: 8px 16px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    font-family: 'Yomogi', sans-serif;
+    border-radius: 15px;
+}
+
+.vote-buttons button:hover {
+    background-color: #32b364;
+    color: white;
+}

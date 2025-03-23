@@ -1,0 +1,91 @@
+/* Home Page Styles */
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    min-height: 90vh;
+    margin-top: 150px;
+}
+
+/* Header */
+.jumbotron-heading {
+    margin-bottom: 30px;
+    margin-right: 75px;
+    padding: 10px 20px;
+    text-align: center;
+    border: 2px solid #000;
+    text-decoration: underline;
+    background-color: #EBEBEB;
+    color: black;
+    border-radius: 15px;
+}
+
+/* Button Wrapper */
+.button-wrapper {
+    display: flex;
+    justify-content: space-between;
+    width: 60%;
+    max-width: 1000px;
+    padding: 10px 10px;
+    border: 2px solid #000;
+    border-radius: 15px;
+    background-color: #EBEBEB;
+    flex-wrap: wrap;
+}
+
+/* Left Side Button Group */
+.btn-group-left {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Right Side Button Group */
+.btn-group-right {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Small Screen Adjustments */
+@media (max-width: 768px) {
+    .button-wrapper {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .btn-group-left, .btn-group-right {
+        justify-content: center;
+    }
+
+    .btn {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+/* Button Styles */
+.btn:hover {
+    background-color: #C0C0C0 !important;
+}
+
+.btn:active {
+    background-color: #C0C0C0 !important;
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.2) !important;
+    border-color: black !important;
+}
+
+.btn:focus {
+    outline: none !important;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2) !important;
+    border-color: black !important;
+}
+
+.btn,
+.btn:hover,
+.btn:focus,
+.btn:active {
+    color: black !important;
+}
