@@ -62,6 +62,9 @@
 
 ❓ **Users can access a user guide.**
 
+✅ **Users can see their vote by the button color(🟩 Green for upvote, 🟥 Red for downvote). Leaving the bin marker resets the vote colour.**
+
+
 ---
 
 ## **References and Additional Packages**

@@ -104,9 +104,33 @@ body {
     cursor: pointer;
     font-family: 'Yomogi', sans-serif;
     border-radius: 15px;
+   
 }
+
+
+/* Default button styles */
+.vote-buttons button.default {
+    background-color: #f0f0f0; /* Default gray background */
+    color: black;
+}
+
+.vote-buttons button.upvoted {
+    background-color: #32b364; /* Green for upvoted */
+    color: white;
+}
+
+.vote-buttons button.downvoted {
+    background-color: #e74c3c; /* Red for downvoted */
+    color: white;
+}
+
 
 .vote-buttons button:hover {
     background-color: #32b364;
+    color: white;
+}
+
+.vote-buttons button.downvote:hover {
+    background-color: #f44336;
     color: white;
 }

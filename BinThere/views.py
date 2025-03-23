@@ -103,7 +103,7 @@ class BinMapView(TemplateView):
 
 
 @method_decorator(csrf_exempt, name='dispatch')  # Remove this if CSRF handling is managed elsewhere
-class VoteView(LoginRequiredMixin, View): # pragma: no cover
+class VoteView(LoginRequiredMixin, View):  # pragma: no cover
 
     def post(self, request, bin_id, vote_type):
         # Fetch the bin object based on bin_id
@@ -134,6 +134,7 @@ class VoteView(LoginRequiredMixin, View): # pragma: no cover
 
                 existing_vote.vote = vote_type
                 existing_vote.save()
+                user_vote = vote_type
 
                 # Update the vote count in the bin
                 if vote_type == 1:
@@ -152,12 +153,22 @@ class VoteView(LoginRequiredMixin, View): # pragma: no cover
 
         # Save the bin object after updating the counts
         bin_obj.save()
+        user_vote = vote_type
+
 
         # Get updated vote counts
         upvotes = bin_obj.upvotes
         downvotes = bin_obj.downvotes
 
-        return JsonResponse({"message": "Vote recorded.", "upvotes": upvotes, "downvotes": downvotes})
+        # Determine the current user's vote status
+        user_vote = vote_type
+
+        return JsonResponse({
+            "message": "Vote recorded.",
+            "upvotes": upvotes,
+            "downvotes": downvotes,
+            "user_vote": user_vote  # Include the user's vote status (1 for upvote, 0 for downvote, or None)
+        })
 
 
 class RegisterProfileView(View): # pragma: no cover
