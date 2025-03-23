@@ -72,7 +72,6 @@
 ### **Images**
 - **Favicon** - [Green Bin with Leaf Logo](https://c8.alamy.com/comp/2HKEJ26/rubbish-bin-green-with-leaf-logo-design-vector-graphic-symbol-icon-illustration-creative-idea-2HKEJ26.jpg)
 - **Green Leaf Picture** - [Freepik](https://img.freepik.com/premium-vector/eco-circle-with-hand-logo_78370-3923.jpg?w=2000)
-- **Rubbish in Bin** - [VectorStock](https://cdn1.vectorstock.com/i/1000x1000/55/65/put-rubbish-in-the-bin-vector-23855565.jpg)
 - **Default Profile Picture 1** - [Dj Cat Image](https://archive.org/details/cat-meme-stock/素材/DJ猫.mp4)
 - **Default Profile Picture 2** - [Bing Image Search](https://www.bing.com/images/search?view=detailV2&ccid=5GpH%2FATc&id=3CD6A2508F665A758A9E00ED778DF7BC0013B9F8&thid=OIP.5GpH_ATcZ3MIdbnMNJNG8AHaHa&mediaurl=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F010%2F852%2F913%2Foriginal%2Fleaf-icon-vector-png.png)
 - **Default Profile Picture 3** - [Technology LinkedIn Background](https://wallpapers.com/images/hd/technology-linkedin-background-sj2amwxyouxivqod.jpg)

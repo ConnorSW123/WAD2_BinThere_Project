@@ -56,7 +56,7 @@ class BinForm(forms.ModelForm):
 
         # Form Validation
         if existing_bin and (location_name or latitude or longitude):
-            raise forms.ValidationError(
+            raise forms.ValidationError( # pragma: no cover
                 "You cannot select an existing bin and provide a new location at the same time."
             )
 

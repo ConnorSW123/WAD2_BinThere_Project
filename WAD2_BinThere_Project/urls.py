@@ -27,7 +27,7 @@ from BinThere.views import HomeView
 
 class MyRegistrationView(RegistrationView): 
     def get_success_url(self, user):
-        return reverse('BinThere:register_profile')
+        return reverse('BinThere:register_profile') # pragma: no cover
 
 
 

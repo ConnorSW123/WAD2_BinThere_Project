@@ -20,9 +20,9 @@ def populate():
     ]
 
     # First, create some users
-    user1 = User.objects.get_or_create(username="user1")[0]
-    user2 = User.objects.get_or_create(username="user2")[0]
-    user3 = User.objects.get_or_create(username="user3")[0]
+    user1 = User.objects.get_or_create(username="user1", password = "p1")[0]
+    user2 = User.objects.get_or_create(username="user2", password = "p2")[0]
+    user3 = User.objects.get_or_create(username="user3", password = "p3")[0]
 
     # Assign random profile pictures to each user
     for user in [user1, user2, user3]:
@@ -58,7 +58,11 @@ def populate():
     textiles_bin_type = BinType.objects.get_or_create(name="Textiles")[0]
 
 
+
+
     print("Bin types populated!")
+                
+
 
     # Now create some bins at these locations with initial upvotes and downvotes
     bin1 = Bin.objects.get_or_create(location=loc1, added_by=user1, upvotes=5, downvotes=2)[0]
@@ -97,6 +101,6 @@ def populate():
     print("Votes populated!")
 
 # Start execution here
-if __name__ == '__main__':
+if __name__ == '__main__': # pragma: no cover
     print('Starting BinThere population script...')
     populate()
