@@ -146,6 +146,10 @@ STATICFILES_DIRS = [STATIC_DIR, ]
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = "/home/ConnorSweeney/WAD2_BinThere_Project/staticfiles"
+
+
+
 #Media Files Root and URL Variables
 MEDIA_DIR = os.path.join(BASE_DIR, 'media')
 MEDIA_ROOT = MEDIA_DIR 
