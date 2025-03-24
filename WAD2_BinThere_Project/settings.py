@@ -37,7 +37,7 @@ with open('secret.key') as f:
     SECRET_KEY = key
 
 # SECURITY WARNING: don't run with debug turned on in production! - In Python Anywhere Production, set to False
-DEBUG = False
+DEBUG = True
 
 # First Item is a PythonAnywhere Hosting URL - Using Connor's
 # Second Item is device port for hosting webapp locally - Do not remove or Webapp will not host locally.
