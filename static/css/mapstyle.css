@@ -83,7 +83,7 @@
 body {
     font-family: 'Yomogi', sans-serif;
     padding-top: 70px;  /* Ensure the map doesn't overlap with the navbar */
-    background-image: url('/static/images/Background.png'); /* Direct path to static folder */
+    background-image: url('/static/Images/Background.png'); /* Direct path to static folder */
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
