@@ -1,7 +1,7 @@
 /* Font and Background */
 body {
     font-family: 'Yomogi', sans-serif;
-    background-image: url("../Images/Background.png");
+    background-image: url("../Images/Background.PNG");
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;

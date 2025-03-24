@@ -56,7 +56,7 @@
 
     <!-- Neccessary Evil for Passing bin data to JavaScript -->
     <script>
-        var backgroundImageUrl = "{% static 'Images/Background.png' %}";
+        var backgroundImageUrl = "{% static 'Images/Background.PNG' %}";
         var binData = JSON.parse('{{ bin_data|escapejs }}');
         initializeMap(binData);
     </script> 
