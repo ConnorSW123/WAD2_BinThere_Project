@@ -10,7 +10,6 @@ from BinThere.forms import UserProfileForm, BinForm, UserForm
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User
 from BinThere.models import UserProfile, BinType
-from django.utils import timezone
 from django.views.generic.edit import CreateView
 from django.views.generic import ListView, TemplateView, FormView, UpdateView, DeleteView
 from django.contrib import messages

@@ -20,8 +20,5 @@ urlpatterns = [
     path('profile/<str:username>/', ProfileView.as_view(), name='profile'),
     path('profiles/', ListProfilesView.as_view(), name='list_profiles'),
     path('help/', HelpView.as_view(), name='help')
-
-    
-
 ]
 
