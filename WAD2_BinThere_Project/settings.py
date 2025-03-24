@@ -36,8 +36,8 @@ with open('secret.key') as f:
     key = f.read().strip() 
     SECRET_KEY = key
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# SECURITY WARNING: don't run with debug turned on in production! - In Python Anywhere Production, set to False
+DEBUG = False
 
 # First Item is a PythonAnywhere Hosting URL - Using Connor's
 # Second Item is device port for hosting webapp locally - Do not remove or Webapp will not host locally.
