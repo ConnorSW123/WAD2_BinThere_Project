@@ -17,7 +17,7 @@
     <div id="navbar-container">
         <nav class="navbar navbar-expand-md fixed-top p-0">
             <a class="navbar-brand p-2" href="{% url 'BinThere:home' %}" style="background-color: transparent; padding: 0px;">
-                <img src="{% static 'images/Home.png' %}" alt="Home" width="120">
+                <img src="{% static 'Images/Home.png' %}" alt="Home" width="120">
             </a>
             <ul class="navbar-nav">
                 <li class="nav-item">
@@ -56,7 +56,7 @@
 
     <!-- Neccessary Evil for Passing bin data to JavaScript -->
     <script>
-        var backgroundImageUrl = "{% static 'images/Background.PNG' %}";
+        var backgroundImageUrl = "{% static 'Images/Background.png' %}";
         var binData = JSON.parse('{{ bin_data|escapejs }}');
         initializeMap(binData);
     </script> 
